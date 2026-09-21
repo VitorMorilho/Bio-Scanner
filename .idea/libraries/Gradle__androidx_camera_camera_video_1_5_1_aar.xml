@@ -1,0 +1,17 @@
+<component name="libraryTable">
+  <library name="Gradle: androidx.camera:camera-video:1.5.1@aar" external-system-id="GRADLE">
+    <ANNOTATIONS>
+      <root url="jar://$USER_HOME$/.gradle/caches/9.3.1/transforms/12465f1b708d1773d8d2977196d9d663/transformed/camera-video-1.5.1/annotations.zip!/" />
+    </ANNOTATIONS>
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/9.3.1/transforms/12465f1b708d1773d8d2977196d9d663/transformed/camera-video-1.5.1/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/9.3.1/transforms/12465f1b708d1773d8d2977196d9d663/transformed/camera-video-1.5.1/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/9.3.1/transforms/12465f1b708d1773d8d2977196d9d663/transformed/camera-video-1.5.1/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.camera/camera-video/1.5.1/324d2672177f17b16105097624dce2f4764bcb8f/camera-video-1.5.1-samples-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.camera/camera-video/1.5.1/61a68cae4aa4905e8e85699bf93ad669c5328ac9/camera-video-1.5.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
