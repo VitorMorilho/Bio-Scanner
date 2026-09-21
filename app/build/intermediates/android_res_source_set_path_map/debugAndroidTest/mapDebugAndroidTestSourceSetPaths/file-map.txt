@@ -1,0 +1,4 @@
+com.bioscanner.test.app-updated_navigation_xml-0 /home/vitormorilho/workspace/BioScanner/app/build/generated/updated_navigation_xml/debugAndroidTest
+com.bioscanner.test.app-packageDebugAndroidTestResources-1 /home/vitormorilho/workspace/BioScanner/app/build/intermediates/incremental/debugAndroidTest/packageDebugAndroidTestResources/merged.dir
+com.bioscanner.test.app-packageDebugAndroidTestResources-2 /home/vitormorilho/workspace/BioScanner/app/build/intermediates/incremental/debugAndroidTest/packageDebugAndroidTestResources/stripped.dir
+com.bioscanner.test.app-debugAndroidTest-3 /home/vitormorilho/workspace/BioScanner/app/build/intermediates/merged_res/debugAndroidTest/mergeDebugAndroidTestResources

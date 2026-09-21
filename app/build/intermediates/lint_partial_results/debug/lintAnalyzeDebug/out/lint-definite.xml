@@ -1,0 +1,632 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<incidents format="6" by="lint 9.1.1" type="incidents">
+
+    <incident
+        id="RedundantLabel"
+        severity="warning"
+        message="Redundant label can be removed">
+        <fix-attribute
+            description="Delete label"
+            namespace="http://schemas.android.com/apk/res/android"
+            attribute="label"/>
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*manifest*0}"
+            line="21"
+            column="17"
+            startOffset="910"
+            endLine="21"
+            endColumn="49"
+            endOffset="942"/>
+    </incident>
+
+    <incident
+        id="AndroidGradlePluginVersion"
+        severity="warning"
+        message="A newer version of Gradle than 9.3.1 is available: 9.7.1">
+        <fix-replace
+            description="Update to 9.7.1"
+            oldString="9.3.1"
+            replacement="9.7.1"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/wrapper/gradle-wrapper.properties"
+            line="4"
+            column="17"
+            startOffset="117"
+            endLine="4"
+            endColumn="80"
+            endOffset="180"/>
+    </incident>
+
+    <incident
+        id="AndroidGradlePluginVersion"
+        severity="warning"
+        message="A newer version of com.android.application than 9.1.1 is available: 9.4.1">
+        <fix-replace
+            description="Replace with 9.4.1"
+            family="Update versions"
+            oldString="9.1.1"
+            replacement="9.4.1"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="2"
+            column="7"
+            startOffset="17"
+            endLine="2"
+            endColumn="14"
+            endOffset="24"/>
+        <map>
+            <entry
+                name="coordinate"
+                string="com.android.application"/>
+            <entry
+                name="revision"
+                string="9.4.1"/>
+        </map>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.core:core-ktx than 1.10.1 is available: 1.19.0">
+        <fix-replace
+            description="Change to 1.19.0"
+            family="Update versions"
+            oldString="1.10.1"
+            replacement="1.19.0"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="3"
+            column="11"
+            startOffset="35"
+            endLine="3"
+            endColumn="19"
+            endOffset="43"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.test.ext:junit than 1.1.5 is available: 1.3.0">
+        <fix-replace
+            description="Change to 1.3.0"
+            family="Update versions"
+            oldString="1.1.5"
+            replacement="1.3.0"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="5"
+            column="16"
+            startOffset="76"
+            endLine="5"
+            endColumn="23"
+            endOffset="83"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.test.espresso:espresso-core than 3.5.1 is available: 3.7.0">
+        <fix-replace
+            description="Change to 3.7.0"
+            family="Update versions"
+            oldString="3.5.1"
+            replacement="3.7.0"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="6"
+            column="16"
+            startOffset="99"
+            endLine="6"
+            endColumn="23"
+            endOffset="106"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.lifecycle:lifecycle-runtime-compose than 2.9.4 is available: 2.11.0">
+        <fix-replace
+            description="Change to 2.11.0"
+            family="Update versions"
+            oldString="2.9.4"
+            replacement="2.11.0"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="7"
+            column="13"
+            startOffset="119"
+            endLine="7"
+            endColumn="20"
+            endOffset="126"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.lifecycle:lifecycle-runtime-ktx than 2.9.4 is available: 2.11.0">
+        <fix-replace
+            description="Change to 2.11.0"
+            family="Update versions"
+            oldString="2.9.4"
+            replacement="2.11.0"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="7"
+            column="13"
+            startOffset="119"
+            endLine="7"
+            endColumn="20"
+            endOffset="126"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.lifecycle:lifecycle-viewmodel-compose than 2.9.4 is available: 2.11.0">
+        <fix-replace
+            description="Change to 2.11.0"
+            family="Update versions"
+            oldString="2.9.4"
+            replacement="2.11.0"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="7"
+            column="13"
+            startOffset="119"
+            endLine="7"
+            endColumn="20"
+            endOffset="126"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.activity:activity-compose than 1.8.0 is available: 1.13.0">
+        <fix-replace
+            description="Change to 1.13.0"
+            family="Update versions"
+            oldString="1.8.0"
+            replacement="1.13.0"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="8"
+            column="19"
+            startOffset="145"
+            endLine="8"
+            endColumn="26"
+            endOffset="152"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.compose:compose-bom than 2024.09.00 is available: 2026.09.00">
+        <fix-replace
+            description="Change to 2026.09.00"
+            family="Update versions"
+            oldString="2024.09.00"
+            replacement="2026.09.00"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="10"
+            column="14"
+            startOffset="184"
+            endLine="10"
+            endColumn="26"
+            endOffset="196"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.hilt:hilt-navigation-compose than 1.3.0 is available: 1.4.0">
+        <fix-replace
+            description="Change to 1.4.0"
+            family="Update versions"
+            oldString="1.3.0"
+            replacement="1.4.0"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="13"
+            column="25"
+            startOffset="252"
+            endLine="13"
+            endColumn="32"
+            endOffset="259"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.room:room-compiler than 2.8.4 is available: 2.8.5">
+        <fix-replace
+            description="Change to 2.8.5"
+            family="Update versions"
+            oldString="2.8.4"
+            replacement="2.8.5"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="14"
+            column="8"
+            startOffset="267"
+            endLine="14"
+            endColumn="15"
+            endOffset="274"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.room:room-ktx than 2.8.4 is available: 2.8.5">
+        <fix-replace
+            description="Change to 2.8.5"
+            family="Update versions"
+            oldString="2.8.4"
+            replacement="2.8.5"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="14"
+            column="8"
+            startOffset="267"
+            endLine="14"
+            endColumn="15"
+            endOffset="274"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.room:room-runtime than 2.8.4 is available: 2.8.5">
+        <fix-replace
+            description="Change to 2.8.5"
+            family="Update versions"
+            oldString="2.8.4"
+            replacement="2.8.5"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="14"
+            column="8"
+            startOffset="267"
+            endLine="14"
+            endColumn="15"
+            endOffset="274"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.room:room-testing than 2.8.4 is available: 2.8.5">
+        <fix-replace
+            description="Change to 2.8.5"
+            family="Update versions"
+            oldString="2.8.4"
+            replacement="2.8.5"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="14"
+            column="8"
+            startOffset="267"
+            endLine="14"
+            endColumn="15"
+            endOffset="274"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.camera:camera-camera2 than 1.5.1 is available: 1.6.2">
+        <fix-replace
+            description="Change to 1.6.2"
+            family="Update versions"
+            oldString="1.5.1"
+            replacement="1.6.2"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="15"
+            column="11"
+            startOffset="285"
+            endLine="15"
+            endColumn="18"
+            endOffset="292"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.camera:camera-core than 1.5.1 is available: 1.6.2">
+        <fix-replace
+            description="Change to 1.6.2"
+            family="Update versions"
+            oldString="1.5.1"
+            replacement="1.6.2"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="15"
+            column="11"
+            startOffset="285"
+            endLine="15"
+            endColumn="18"
+            endOffset="292"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.camera:camera-lifecycle than 1.5.1 is available: 1.6.2">
+        <fix-replace
+            description="Change to 1.6.2"
+            family="Update versions"
+            oldString="1.5.1"
+            replacement="1.6.2"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="15"
+            column="11"
+            startOffset="285"
+            endLine="15"
+            endColumn="18"
+            endOffset="292"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.camera:camera-view than 1.5.1 is available: 1.6.2">
+        <fix-replace
+            description="Change to 1.6.2"
+            family="Update versions"
+            oldString="1.5.1"
+            replacement="1.6.2"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="15"
+            column="11"
+            startOffset="285"
+            endLine="15"
+            endColumn="18"
+            endOffset="292"/>
+    </incident>
+
+    <incident
+        id="GradleDependency"
+        severity="warning"
+        message="A newer version of androidx.navigation:navigation-compose than 2.9.7 is available: 2.10.1">
+        <fix-replace
+            description="Change to 2.10.1"
+            family="Update versions"
+            oldString="2.9.7"
+            replacement="2.10.1"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="16"
+            column="21"
+            startOffset="313"
+            endLine="16"
+            endColumn="28"
+            endOffset="320"/>
+    </incident>
+
+    <incident
+        id="NewerVersionAvailable"
+        severity="warning"
+        message="A newer version of org.jetbrains.kotlin.plugin.compose than 2.0.21 is available: 2.4.20">
+        <fix-replace
+            description="Change to 2.4.20"
+            family="Update versions"
+            oldString="2.0.21"
+            replacement="2.4.20"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="9"
+            column="10"
+            startOffset="162"
+            endLine="9"
+            endColumn="18"
+            endOffset="170"/>
+    </incident>
+
+    <incident
+        id="NewerVersionAvailable"
+        severity="warning"
+        message="A newer version of org.jetbrains.kotlin.plugin.serialization than 2.0.21 is available: 2.4.20">
+        <fix-replace
+            description="Change to 2.4.20"
+            family="Update versions"
+            oldString="2.0.21"
+            replacement="2.4.20"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="9"
+            column="10"
+            startOffset="162"
+            endLine="9"
+            endColumn="18"
+            endOffset="170"/>
+    </incident>
+
+    <incident
+        id="NewerVersionAvailable"
+        severity="warning"
+        message="A newer version of com.google.dagger.hilt.android than 2.59.2 is available: 2.60.1">
+        <fix-replace
+            description="Change to 2.60.1"
+            family="Update versions"
+            oldString="2.59.2"
+            replacement="2.60.1"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="12"
+            column="8"
+            startOffset="219"
+            endLine="12"
+            endColumn="16"
+            endOffset="227"/>
+    </incident>
+
+    <incident
+        id="NewerVersionAvailable"
+        severity="warning"
+        message="A newer version of com.google.dagger:hilt-android than 2.59.2 is available: 2.60.1">
+        <fix-replace
+            description="Change to 2.60.1"
+            family="Update versions"
+            oldString="2.59.2"
+            replacement="2.60.1"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="12"
+            column="8"
+            startOffset="219"
+            endLine="12"
+            endColumn="16"
+            endOffset="227"/>
+    </incident>
+
+    <incident
+        id="NewerVersionAvailable"
+        severity="warning"
+        message="A newer version of com.google.dagger:hilt-android-testing than 2.59.2 is available: 2.60.1">
+        <fix-replace
+            description="Change to 2.60.1"
+            family="Update versions"
+            oldString="2.59.2"
+            replacement="2.60.1"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="12"
+            column="8"
+            startOffset="219"
+            endLine="12"
+            endColumn="16"
+            endOffset="227"/>
+    </incident>
+
+    <incident
+        id="NewerVersionAvailable"
+        severity="warning"
+        message="A newer version of com.google.dagger:hilt-compiler than 2.59.2 is available: 2.60.1">
+        <fix-replace
+            description="Change to 2.60.1"
+            family="Update versions"
+            oldString="2.59.2"
+            replacement="2.60.1"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="12"
+            column="8"
+            startOffset="219"
+            endLine="12"
+            endColumn="16"
+            endOffset="227"/>
+    </incident>
+
+    <incident
+        id="NewerVersionAvailable"
+        severity="warning"
+        message="A newer version of org.tensorflow:tensorflow-lite than 2.16.1 is available: 2.17.0">
+        <fix-replace
+            description="Change to 2.17.0"
+            family="Update versions"
+            oldString="2.16.1"
+            replacement="2.17.0"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="17"
+            column="18"
+            startOffset="338"
+            endLine="17"
+            endColumn="26"
+            endOffset="346"/>
+    </incident>
+
+    <incident
+        id="NewerVersionAvailable"
+        severity="warning"
+        message="A newer version of org.mockito:mockito-core than 5.20.0 is available: 5.23.0">
+        <fix-replace
+            description="Change to 5.23.0"
+            family="Update versions"
+            oldString="5.20.0"
+            replacement="5.23.0"
+            priority="0"/>
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="19"
+            column="15"
+            startOffset="390"
+            endLine="19"
+            endColumn="23"
+            endOffset="398"/>
+    </incident>
+
+    <incident
+        id="Aligned16KB"
+        severity="warning"
+        message="The native library `arm64-v8a/libtensorflowlite_jni.so` (from `org.tensorflow:tensorflow-lite:2.16.1`) is not 16 KB aligned">
+        <location
+            file="$HOME/workspace/BioScanner/gradle/libs.versions.toml"
+            line="57"
+            column="20"
+            startOffset="3439"
+            endLine="57"
+            endColumn="105"
+            endOffset="3524"/>
+    </incident>
+
+    <incident
+        id="UseKtx"
+        severity="warning"
+        message="Use the KTX extension function `String.toUri` instead?">
+        <fix-replace
+            description="Replace with the toUri extension function"
+            family="Replace with the toUri extension function"
+            robot="true"
+            independent="true"
+            oldString="Uri.parse(&#xA;        checkNotNull(savedStateHandle.get&lt;String>(Routes.RESULT_ARG_IMAGE_URI)) {&#xA;            &quot;ResultScreen requer o argumento de navegação ${Routes.RESULT_ARG_IMAGE_URI}&quot;&#xA;        },&#xA;    )"
+            replacement="checkNotNull(savedStateHandle.get&lt;String>(Routes.RESULT_ARG_IMAGE_URI)) {&#xA;            &quot;ResultScreen requer o argumento de navegação ${Routes.RESULT_ARG_IMAGE_URI}&quot;&#xA;        }.toUri()"
+            reformat="value"
+            imports="androidx.core.net.toUri"
+            priority="0">
+            <range
+                file="${:app*debug*MAIN*sourceProvider*0*javaDir*0}/com/bioscanner/presentation/result/ResultViewModel.kt"
+                startOffset="1125"
+                endOffset="1324"/>
+        </fix-replace>
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*javaDir*0}/com/bioscanner/presentation/result/ResultViewModel.kt"
+            line="31"
+            column="33"
+            startOffset="1125"
+            endLine="35"
+            endColumn="6"
+            endOffset="1324"/>
+    </incident>
+
+</incidents>

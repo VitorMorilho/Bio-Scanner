@@ -1,0 +1,80 @@
+[
+  {
+    "id": "bothrops_jararaca",
+    "scientificName": "Bothrops jararaca",
+    "popularName": "Jararaca",
+    "family": "Viperidae",
+    "category": "snake",
+    "venomous": true,
+    "riskLevel": "HIGH",
+    "description": "Serpente peçonhenta responsável pela maioria dos acidentes ofídicos no Brasil. Possui coloração variável, geralmente em tons de marrom, com manchas triangulares nas laterais do corpo.",
+    "geographicDistribution": "Sul e sudeste do Brasil, especialmente em áreas de Mata Atlântica e regiões rurais.",
+    "firstAidProcedure": "Mantenha a vítima calma e imóvel, retire anéis/objetos apertados do membro picado, eleve levemente o membro e procure atendimento médico imediatamente. NÃO faça torniquete, NÃO corte o local da picada e NÃO tente sugar o veneno.",
+    "referenceImagePath": "images/reference/bothrops_jararaca.jpg"
+  },
+  {
+    "id": "crotalus_durissus",
+    "scientificName": "Crotalus durissus",
+    "popularName": "Cascavel",
+    "family": "Viperidae",
+    "category": "snake",
+    "venomous": true,
+    "riskLevel": "HIGH",
+    "description": "Facilmente reconhecida pelo chocalho na ponta da cauda, usado como aviso sonoro. Seu veneno tem ação neurotóxica, podendo causar fraqueza muscular e insuficiência respiratória.",
+    "geographicDistribution": "Áreas abertas e secas do Brasil central, como cerrado e caatinga.",
+    "firstAidProcedure": "Procure atendimento médico imediatamente. Mantenha a vítima em repouso, monitore a respiração e evite qualquer esforço físico. NÃO faça torniquete nem tente sugar o veneno.",
+    "referenceImagePath": "images/reference/crotalus_durissus.jpg"
+  },
+  {
+    "id": "micrurus_corallinus",
+    "scientificName": "Micrurus corallinus",
+    "popularName": "Coral-verdadeira",
+    "family": "Elapidae",
+    "category": "snake",
+    "venomous": true,
+    "riskLevel": "HIGH",
+    "description": "Serpente de anéis coloridos (vermelho, preto e branco/amarelo), com veneno neurotóxico potente. Acidentes são raros por seu hábito discreto e fossorial.",
+    "geographicDistribution": "Mata Atlântica, do sul da Bahia ao Rio Grande do Sul.",
+    "firstAidProcedure": "Procure atendimento médico de urgência imediatamente, pois o veneno pode causar paralisia respiratória rapidamente. Mantenha a vítima em repouso absoluto durante o transporte.",
+    "referenceImagePath": "images/reference/micrurus_corallinus.jpg"
+  },
+  {
+    "id": "boa_constrictor",
+    "scientificName": "Boa constrictor",
+    "popularName": "Jiboia",
+    "family": "Boidae",
+    "category": "snake",
+    "venomous": false,
+    "riskLevel": "LOW",
+    "description": "Serpente não peçonhenta de grande porte, que mata suas presas por constrição. Costuma ser confundida com espécies perigosas devido ao tamanho, mas não oferece risco de envenenamento.",
+    "geographicDistribution": "Ampla distribuição na América do Sul, incluindo quase todo o território brasileiro.",
+    "firstAidProcedure": "Picadas não são peçonhentas, mas podem causar ferimentos mecânicos. Limpe o local com água e sabão e procure avaliação médica caso haja sinais de infecção.",
+    "referenceImagePath": "images/reference/boa_constrictor.jpg"
+  },
+  {
+    "id": "bothrops_alternatus",
+    "scientificName": "Bothrops alternatus",
+    "popularName": "Urutu-cruzeiro",
+    "family": "Viperidae",
+    "category": "snake",
+    "venomous": true,
+    "riskLevel": "HIGH",
+    "description": "Serpente peçonhenta de corpo robusto, com padrão de manchas em forma de meia-lua alternadas nas costas. Comum em áreas úmidas e proximidades de cursos d'água.",
+    "geographicDistribution": "Sul do Brasil, especialmente Rio Grande do Sul, Santa Catarina e Paraná.",
+    "firstAidProcedure": "Procure atendimento médico imediatamente. Mantenha o membro picado imobilizado e levemente elevado. NÃO faça torniquete nem corte o local da picada.",
+    "referenceImagePath": "images/reference/bothrops_alternatus.jpg"
+  },
+  {
+    "id": "philodryas_olfersii",
+    "scientificName": "Philodryas olfersii",
+    "popularName": "Cobra-verde",
+    "family": "Dipsadidae",
+    "category": "snake",
+    "venomous": true,
+    "riskLevel": "MEDIUM",
+    "description": "Serpente opistóglifa (presas posteriores), de coloração esverdeada, ágil e diurna. Picadas podem causar inchaço e dor local, mas acidentes graves são incomuns.",
+    "geographicDistribution": "Ampla distribuição no Brasil, comum em áreas urbanas e periurbanas.",
+    "firstAidProcedure": "Limpe o local, mantenha o membro elevado e procure avaliação médica caso haja inchaço importante, dor intensa ou sangramento no local da picada.",
+    "referenceImagePath": "images/reference/philodryas_olfersii.jpg"
+  }
+]

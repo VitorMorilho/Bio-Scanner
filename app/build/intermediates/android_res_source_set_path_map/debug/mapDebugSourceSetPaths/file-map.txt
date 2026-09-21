@@ -1,0 +1,7 @@
+com.bioscanner.app-pngs-0 /home/vitormorilho/workspace/BioScanner/app/build/generated/res/pngs/debug
+com.bioscanner.app-updated_navigation_xml-1 /home/vitormorilho/workspace/BioScanner/app/build/generated/updated_navigation_xml/debug
+com.bioscanner.app-packageDebugResources-2 /home/vitormorilho/workspace/BioScanner/app/build/intermediates/incremental/debug/packageDebugResources/merged.dir
+com.bioscanner.app-packageDebugResources-3 /home/vitormorilho/workspace/BioScanner/app/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
+com.bioscanner.app-debug-4 /home/vitormorilho/workspace/BioScanner/app/build/intermediates/merged_res/debug/mergeDebugResources
+com.bioscanner.app-debug-5 /home/vitormorilho/workspace/BioScanner/app/src/debug/res
+com.bioscanner.app-main-6 /home/vitormorilho/workspace/BioScanner/app/src/main/res

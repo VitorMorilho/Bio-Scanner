@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.bioscanner.data.repository.SpeciesMapperTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-09-19T15:52:27.867Z" hostname="pop-os" time="0.003">
+  <properties/>
+  <testcase name="maps all other fields through unchanged" classname="com.bioscanner.data.repository.SpeciesMapperTest" time="0.001"/>
+  <testcase name="maps known risk level strings" classname="com.bioscanner.data.repository.SpeciesMapperTest" time="0.0"/>
+  <testcase name="unrecognized risk level string falls back to UNKNOWN" classname="com.bioscanner.data.repository.SpeciesMapperTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

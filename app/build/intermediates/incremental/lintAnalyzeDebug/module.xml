@@ -1,0 +1,20 @@
+<lint-module
+    format="1"
+    dir="/home/vitormorilho/workspace/BioScanner/app"
+    name=":app"
+    type="APP"
+    maven="Bio Scanner:app:unspecified"
+    agpVersion="9.1.1"
+    buildFolder="build"
+    bootClassPath="/home/vitormorilho/Android/Sdk/platforms/android-36.1/android.jar:/home/vitormorilho/Android/Sdk/build-tools/36.0.0/core-lambda-stubs.jar"
+    javaSourceLevel="11"
+    compileTarget="android-36.1"
+    neverShrinking="true"
+    highlightGradualR8Api="false">
+  <lintOptions
+      abortOnError="true"
+      absolutePaths="true"
+      checkReleaseBuilds="true"
+      explainIssues="true"/>
+  <variant name="debug"/>
+</lint-module>

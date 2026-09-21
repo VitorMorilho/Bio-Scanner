@@ -1,0 +1,103 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.bioscanner.test" >
+4
+5    <uses-sdk
+5-->/home/vitormorilho/workspace/BioScanner/app/build/intermediates/tmp/manifest/androidTest/debug/tempFile2ProcessTestManifest13050831091869798987.xml:5:5-7:41
+6        android:minSdkVersion="24"
+6-->/home/vitormorilho/workspace/BioScanner/app/build/intermediates/tmp/manifest/androidTest/debug/tempFile2ProcessTestManifest13050831091869798987.xml:6:9-35
+7        android:targetSdkVersion="36" />
+7-->/home/vitormorilho/workspace/BioScanner/app/build/intermediates/tmp/manifest/androidTest/debug/tempFile2ProcessTestManifest13050831091869798987.xml:7:9-38
+8
+9    <instrumentation
+9-->/home/vitormorilho/workspace/BioScanner/app/build/intermediates/tmp/manifest/androidTest/debug/tempFile2ProcessTestManifest13050831091869798987.xml:9:5-14:50
+10        android:name="com.bioscanner.CustomTestRunner"
+10-->/home/vitormorilho/workspace/BioScanner/app/build/intermediates/tmp/manifest/androidTest/debug/tempFile2ProcessTestManifest13050831091869798987.xml:10:9-55
+11        android:functionalTest="false"
+11-->/home/vitormorilho/workspace/BioScanner/app/build/intermediates/tmp/manifest/androidTest/debug/tempFile2ProcessTestManifest13050831091869798987.xml:11:9-39
+12        android:handleProfiling="false"
+12-->/home/vitormorilho/workspace/BioScanner/app/build/intermediates/tmp/manifest/androidTest/debug/tempFile2ProcessTestManifest13050831091869798987.xml:12:9-40
+13        android:label="Tests for com.bioscanner"
+13-->/home/vitormorilho/workspace/BioScanner/app/build/intermediates/tmp/manifest/androidTest/debug/tempFile2ProcessTestManifest13050831091869798987.xml:13:9-49
+14        android:targetPackage="com.bioscanner" />
+14-->/home/vitormorilho/workspace/BioScanner/app/build/intermediates/tmp/manifest/androidTest/debug/tempFile2ProcessTestManifest13050831091869798987.xml:14:9-47
+15
+16    <uses-permission android:name="android.permission.REORDER_TASKS" />
+16-->[androidx.test:core:1.5.0] /home/vitormorilho/.gradle/caches/9.3.1/transforms/4551e790c3adcbcd883a5d9da4a37623/transformed/core-1.5.0/AndroidManifest.xml:24:5-72
+16-->[androidx.test:core:1.5.0] /home/vitormorilho/.gradle/caches/9.3.1/transforms/4551e790c3adcbcd883a5d9da4a37623/transformed/core-1.5.0/AndroidManifest.xml:24:22-69
+17
+18    <queries>
+18-->[androidx.test:runner:1.5.2] /home/vitormorilho/.gradle/caches/9.3.1/transforms/29ad228359a96c5b9218c516548af09f/transformed/runner-1.5.2/AndroidManifest.xml:24:5-28:15
+19        <package android:name="androidx.test.orchestrator" />
+19-->[androidx.test:runner:1.5.2] /home/vitormorilho/.gradle/caches/9.3.1/transforms/29ad228359a96c5b9218c516548af09f/transformed/runner-1.5.2/AndroidManifest.xml:25:9-62
+19-->[androidx.test:runner:1.5.2] /home/vitormorilho/.gradle/caches/9.3.1/transforms/29ad228359a96c5b9218c516548af09f/transformed/runner-1.5.2/AndroidManifest.xml:25:18-59
+20        <package android:name="androidx.test.services" />
+20-->[androidx.test:runner:1.5.2] /home/vitormorilho/.gradle/caches/9.3.1/transforms/29ad228359a96c5b9218c516548af09f/transformed/runner-1.5.2/AndroidManifest.xml:26:9-58
+20-->[androidx.test:runner:1.5.2] /home/vitormorilho/.gradle/caches/9.3.1/transforms/29ad228359a96c5b9218c516548af09f/transformed/runner-1.5.2/AndroidManifest.xml:26:18-55
+21        <package android:name="com.google.android.apps.common.testing.services" />
+21-->[androidx.test:runner:1.5.2] /home/vitormorilho/.gradle/caches/9.3.1/transforms/29ad228359a96c5b9218c516548af09f/transformed/runner-1.5.2/AndroidManifest.xml:27:9-83
+21-->[androidx.test:runner:1.5.2] /home/vitormorilho/.gradle/caches/9.3.1/transforms/29ad228359a96c5b9218c516548af09f/transformed/runner-1.5.2/AndroidManifest.xml:27:18-80
+22    </queries>
+23
+24    <application
+24-->/home/vitormorilho/workspace/BioScanner/app/build/intermediates/tmp/manifest/androidTest/debug/tempFile2ProcessTestManifest13050831091869798987.xml:16:5-20:19
+25        android:debuggable="true"
+26        android:extractNativeLibs="false" >
+26-->INJECTED
+27        <activity
+27-->/home/vitormorilho/workspace/BioScanner/app/build/intermediates/tmp/manifest/androidTest/debug/tempFile2ProcessTestManifest13050831091869798987.xml:17:9-19:40
+28            android:name="com.bioscanner.test.HiltTestActivity"
+28-->/home/vitormorilho/workspace/BioScanner/app/build/intermediates/tmp/manifest/androidTest/debug/tempFile2ProcessTestManifest13050831091869798987.xml:18:13-64
+29            android:exported="false" />
+29-->/home/vitormorilho/workspace/BioScanner/app/build/intermediates/tmp/manifest/androidTest/debug/tempFile2ProcessTestManifest13050831091869798987.xml:19:13-37
+30        <activity
+30-->[androidx.test:core:1.5.0] /home/vitormorilho/.gradle/caches/9.3.1/transforms/4551e790c3adcbcd883a5d9da4a37623/transformed/core-1.5.0/AndroidManifest.xml:27:9-34:20
+31            android:name="androidx.test.core.app.InstrumentationActivityInvoker$BootstrapActivity"
+31-->[androidx.test:core:1.5.0] /home/vitormorilho/.gradle/caches/9.3.1/transforms/4551e790c3adcbcd883a5d9da4a37623/transformed/core-1.5.0/AndroidManifest.xml:28:13-99
+32            android:exported="true"
+32-->[androidx.test:core:1.5.0] /home/vitormorilho/.gradle/caches/9.3.1/transforms/4551e790c3adcbcd883a5d9da4a37623/transformed/core-1.5.0/AndroidManifest.xml:29:13-36
+33            android:theme="@style/WhiteBackgroundTheme" >
+33-->[androidx.test:core:1.5.0] /home/vitormorilho/.gradle/caches/9.3.1/transforms/4551e790c3adcbcd883a5d9da4a37623/transformed/core-1.5.0/AndroidManifest.xml:30:13-56
+34            <intent-filter android:priority="-100" >
+34-->[androidx.test:core:1.5.0] /home/vitormorilho/.gradle/caches/9.3.1/transforms/4551e790c3adcbcd883a5d9da4a37623/transformed/core-1.5.0/AndroidManifest.xml:31:13-33:29
+34-->[androidx.test:core:1.5.0] /home/vitormorilho/.gradle/caches/9.3.1/transforms/4551e790c3adcbcd883a5d9da4a37623/transformed/core-1.5.0/AndroidManifest.xml:31:28-51
+35                <category android:name="android.intent.category.LAUNCHER" />
+35-->[androidx.test:core:1.5.0] /home/vitormorilho/.gradle/caches/9.3.1/transforms/4551e790c3adcbcd883a5d9da4a37623/transformed/core-1.5.0/AndroidManifest.xml:32:17-77
+35-->[androidx.test:core:1.5.0] /home/vitormorilho/.gradle/caches/9.3.1/transforms/4551e790c3adcbcd883a5d9da4a37623/transformed/core-1.5.0/AndroidManifest.xml:32:27-74
+36            </intent-filter>
+37        </activity>
+38        <activity
+38-->[androidx.test:core:1.5.0] /home/vitormorilho/.gradle/caches/9.3.1/transforms/4551e790c3adcbcd883a5d9da4a37623/transformed/core-1.5.0/AndroidManifest.xml:35:9-42:20
+39            android:name="androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity"
+39-->[androidx.test:core:1.5.0] /home/vitormorilho/.gradle/caches/9.3.1/transforms/4551e790c3adcbcd883a5d9da4a37623/transformed/core-1.5.0/AndroidManifest.xml:36:13-95
+40            android:exported="true"
+40-->[androidx.test:core:1.5.0] /home/vitormorilho/.gradle/caches/9.3.1/transforms/4551e790c3adcbcd883a5d9da4a37623/transformed/core-1.5.0/AndroidManifest.xml:37:13-36
+41            android:theme="@style/WhiteBackgroundTheme" >
+41-->[androidx.test:core:1.5.0] /home/vitormorilho/.gradle/caches/9.3.1/transforms/4551e790c3adcbcd883a5d9da4a37623/transformed/core-1.5.0/AndroidManifest.xml:38:13-56
+42            <intent-filter android:priority="-100" >
+42-->[androidx.test:core:1.5.0] /home/vitormorilho/.gradle/caches/9.3.1/transforms/4551e790c3adcbcd883a5d9da4a37623/transformed/core-1.5.0/AndroidManifest.xml:31:13-33:29
+42-->[androidx.test:core:1.5.0] /home/vitormorilho/.gradle/caches/9.3.1/transforms/4551e790c3adcbcd883a5d9da4a37623/transformed/core-1.5.0/AndroidManifest.xml:31:28-51
+43                <category android:name="android.intent.category.LAUNCHER" />
+43-->[androidx.test:core:1.5.0] /home/vitormorilho/.gradle/caches/9.3.1/transforms/4551e790c3adcbcd883a5d9da4a37623/transformed/core-1.5.0/AndroidManifest.xml:32:17-77
+43-->[androidx.test:core:1.5.0] /home/vitormorilho/.gradle/caches/9.3.1/transforms/4551e790c3adcbcd883a5d9da4a37623/transformed/core-1.5.0/AndroidManifest.xml:32:27-74
+44            </intent-filter>
+45        </activity>
+46        <activity
+46-->[androidx.test:core:1.5.0] /home/vitormorilho/.gradle/caches/9.3.1/transforms/4551e790c3adcbcd883a5d9da4a37623/transformed/core-1.5.0/AndroidManifest.xml:43:9-50:20
+47            android:name="androidx.test.core.app.InstrumentationActivityInvoker$EmptyFloatingActivity"
+47-->[androidx.test:core:1.5.0] /home/vitormorilho/.gradle/caches/9.3.1/transforms/4551e790c3adcbcd883a5d9da4a37623/transformed/core-1.5.0/AndroidManifest.xml:44:13-103
+48            android:exported="true"
+48-->[androidx.test:core:1.5.0] /home/vitormorilho/.gradle/caches/9.3.1/transforms/4551e790c3adcbcd883a5d9da4a37623/transformed/core-1.5.0/AndroidManifest.xml:45:13-36
+49            android:theme="@style/WhiteBackgroundDialogTheme" >
+49-->[androidx.test:core:1.5.0] /home/vitormorilho/.gradle/caches/9.3.1/transforms/4551e790c3adcbcd883a5d9da4a37623/transformed/core-1.5.0/AndroidManifest.xml:46:13-62
+50            <intent-filter android:priority="-100" >
+50-->[androidx.test:core:1.5.0] /home/vitormorilho/.gradle/caches/9.3.1/transforms/4551e790c3adcbcd883a5d9da4a37623/transformed/core-1.5.0/AndroidManifest.xml:31:13-33:29
+50-->[androidx.test:core:1.5.0] /home/vitormorilho/.gradle/caches/9.3.1/transforms/4551e790c3adcbcd883a5d9da4a37623/transformed/core-1.5.0/AndroidManifest.xml:31:28-51
+51                <category android:name="android.intent.category.LAUNCHER" />
+51-->[androidx.test:core:1.5.0] /home/vitormorilho/.gradle/caches/9.3.1/transforms/4551e790c3adcbcd883a5d9da4a37623/transformed/core-1.5.0/AndroidManifest.xml:32:17-77
+51-->[androidx.test:core:1.5.0] /home/vitormorilho/.gradle/caches/9.3.1/transforms/4551e790c3adcbcd883a5d9da4a37623/transformed/core-1.5.0/AndroidManifest.xml:32:27-74
+52            </intent-filter>
+53        </activity>
+54    </application>
+55
+56</manifest>
