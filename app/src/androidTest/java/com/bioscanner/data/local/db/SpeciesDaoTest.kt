@@ -68,6 +68,33 @@ class SpeciesDaoTest {
     }
 
     @Test
+    fun getSpeciesInRegionJoinsAndOrdersByOccurrences() = runBlocking {
+        dao.replaceAll(
+            species = listOf(entity("sp1"), entity("sp2"), entity("sp3")),
+            regions = listOf(
+                SpeciesRegionEntity("sp1", "MT", 5),
+                SpeciesRegionEntity("sp2", "MT", 40),
+                SpeciesRegionEntity("sp3", "PR", 7),
+            ),
+        )
+
+        val inMt = dao.getSpeciesInRegion("MT").first()
+
+        assertEquals(listOf("sp2", "sp1"), inMt.map { it.species.id })
+        assertEquals(40, inMt.first().occurrences)
+        assertEquals(listOf("PR"), dao.getRegionIdsForSpecies("sp3").first())
+    }
+
+    @Test
+    fun replaceAllDropsPreviousContent() = runBlocking {
+        dao.replaceAll(listOf(entity("old")), listOf(SpeciesRegionEntity("old", "MT", 1)))
+        dao.replaceAll(listOf(entity("new")), emptyList())
+
+        assertEquals(1, dao.count())
+        assertEquals(emptyList<SpeciesInRegion>(), dao.getSpeciesInRegion("MT").first())
+    }
+
+    @Test
     fun countReflectsNumberOfSeededRows() = runBlocking {
         assertEquals(0, dao.count())
 

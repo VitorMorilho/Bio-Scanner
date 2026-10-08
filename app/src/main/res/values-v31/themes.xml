@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Android 12+: o sistema sempre mostra o próprio splash (ícone centralizado)
+         antes do app; aqui ele só herda o fundo do logo. A arte completa vem
+         logo depois, na IntroScreen. -->
+    <style name="Theme.BioScanner" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/ic_launcher_background</item>
+        <item name="android:windowSplashScreenBackground">@color/ic_launcher_background</item>
+    </style>
+</resources>

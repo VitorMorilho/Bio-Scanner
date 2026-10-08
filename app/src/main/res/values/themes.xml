@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.BioScanner" parent="android:Theme.Material.Light.NoActionBar"/>
+    <!-- Fundo verde-escuro em vez de branco: é o que aparece enquanto o app abre,
+         então a passagem para a tela de abertura (IntroScreen) não pisca. -->
+    <style name="Theme.BioScanner" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/ic_launcher_background</item>
+    </style>
 </resources>

@@ -3,7 +3,11 @@
 >
 
     <uses-permission android:name="android.permission.CAMERA"/>
+    <!-- Local do registro. Opcional: sem permissão o registro é salvo sem posição. -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-feature android:name="android.hardware.camera" android:required="false"/>
+    <uses-feature android:name="android.hardware.location.gps" android:required="false"/>
 
     <application
             android:name=".BioScannerApplication"

@@ -26,13 +26,17 @@ anything iOS-related now.
 
 ## Project status
 
-MVP skeleton is implemented end-to-end (Home → Capture → Result → Detail) using **mock data**:
-~6 hand-authored snake species seeded into Room from `assets/seed/species_seed.json`, and a
-deterministic `MockImageClassifier` standing in for the real model (see "ML / recognition"
-below). No real dataset or trained `.tflite` model exists yet — pending the user providing the
-image dataset path and/or training the model. No reference photos are bundled yet either
-(`SpeciesEntity.referenceImagePath` is populated in the seed data but the actual JPEGs under
-`assets/images/reference/` don't exist yet; the UI doesn't try to load them).
+Main flow: Home → Capture → Register (photo + date/time + location, "Salvar nos meus
+registros") → Meus registros. A photo becomes an *observation* (registro) saved to the user's
+records; there is **no species identification/analysis in the flow anymore** (the user dropped
+both instant identification and "send for analysis"). The classifier stack (`ImageClassifier`,
+`MockImageClassifier`, `ClassifyAndLookupSpeciesUseCase`, `ConfidenceBadge`) is kept but
+currently unused by any screen, pending the real model. Bottom nav: Registrar · Glossário
+(species search + map by state) · Meus registros (mocked user area listing the observations —
+no login yet). No real
+dataset or trained `.tflite` model exists yet. Species content is real: ~380 Brazilian snake
+species from GBIF, one open-license photo each (iNaturalist), and hand-curated text for the
+species filled in `tools/data/especies.csv` (see "Species data pipeline").
 
 Not yet a git repo with commits (a plain `git init` was run, but no author identity is
 configured — set `user.name`/`user.email` locally in this repo before committing).
@@ -79,12 +83,23 @@ This is a Gradle project; use the wrapper (`./gradlew`) from the repo root.
   storage permission on scoped-storage-era Android. Gallery uses
   `ActivityResultContracts.PickVisualMedia()` (modern photo picker). Camera permission is
   optional at runtime — if denied, gallery picking still works.
-- Local database: Room, single flat `SpeciesEntity` table (`data/local/db/`) — deliberately not
-  normalized; every field is 1:1 with a species, so splitting into related tables would only add
-  join complexity for no current benefit. `classifierLabel` is a separate column from `id`,
-  since a real model's label taxonomy may not match the DB's internal slugs 1:1. Seeded on first
-  DB creation (`DatabaseCallback.onCreate`) from `assets/seed/species_seed.json`, parsed with
-  kotlinx.serialization.
+- Local database: Room v3 (`data/local/db/`): flat `species` table (every field 1:1 with a
+  species; curated fields are nullable) + `species_region` N:N join (species × UF, with GBIF
+  occurrence counts) + `observation` (the user's records; its `status`/`speciesId`/`confidence` columns are leftovers
+  from the dropped analysis flow, kept to avoid another migration — `status` is always `SAVED`). `classifierLabel` is a separate column
+  from `id`, since a real model's label taxonomy may not match the DB's internal slugs 1:1.
+  `species`/`species_region` are asset-derived: `DatabaseCallback.onOpen` replaces them whenever
+  the seed's `version` hash differs from the one stored in SharedPreferences (it never touches
+  `observation`). **`observation` is user data: every schema change needs a `Migration`** (see
+  `MIGRATION_2_3` and `androidTest/.../MigrationTest`, which validates against
+  `app/schemas/`); destructive fallback is only allowed from v1. `observation.speciesId` is
+  deliberately not a FK, since reseeding deletes and reinserts species.
+- Observations (`domain/observation/` ports, `data/observation/` impls, bound in
+  `ObservationModule`): `CaptureMetadataProvider` (camera photo → now + device location; gallery
+  photo → EXIF date/location, falling back to device; platform `LocationManager`, no Play
+  Services; location permission is optional), `PhotoStorage` (copies the photo into
+  `filesDir/observations/`, downscaled to 1600 px and EXIF-rotated — picker URIs expire). The Android photo picker usually strips EXIF location, so
+  gallery photos often get the device location instead (the UI says which origin each field has).
 - ML / recognition: `domain/classifier/ImageClassifier` is the abstraction; `ClassifierModule`
   currently binds `data/classifier/MockImageClassifier` (deterministic, derived from cheap
   `Bitmap` properties, picks from whatever species are actually seeded in Room — not a
@@ -102,6 +117,19 @@ This is a Gradle project; use the wrapper (`./gradlew`) from the repo root.
     of the support library's helper classes.
 - Async: Kotlin Coroutines + Flow (`SpeciesRepository` exposes data via `Flow`).
 - Navigation: Navigation Compose, routes in `presentation/navigation/Routes.kt`.
+- Glossary "Por região" tab (`presentation/glossary/region/`): Canvas-drawn map of the 27
+  Brazilian states (tap or UF chips) listing snakes recorded in each state, with photo; tapping
+  opens the species Detail screen. State outlines come from `assets/regions/br_states.json`
+  (not Room); the species list is a Room join. Photos are decoded from assets by
+  `presentation/common/SpeciesImage` (LruCache, no image library).
+- Species data pipeline: `tools/data/especies.csv` (`;`-separated, Portuguese headers) is the
+  hand-edited source of truth for curated fields. `python3 tools/data/build_species_data.py`
+  (`--refresh` to re-query GBIF/IBGE, otherwise uses `tools/data/.cache/`) appends rows for new
+  GBIF species to the CSV without touching existing ones, validates it, downloads/converts photos
+  (needs ImageMagick) and writes `assets/seed/species_seed.json`, `assets/regions/br_states.json`
+  and `assets/images/species/*.webp`. Never edit those outputs by hand. The script docstring
+  explains the non-obvious bits (no "Serpentes" taxon in the GBIF backbone → queries by family
+  keys; state filter by `gadmGid`; photo license whitelist).
 
 ## Product/UX rules
 

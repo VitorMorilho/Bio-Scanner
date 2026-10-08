@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Verde-escuro do fundo do logo; também usado no splash para a transição não "piscar". -->
+    <color name="ic_launcher_background">#FF0B1A0C</color>
+</resources>

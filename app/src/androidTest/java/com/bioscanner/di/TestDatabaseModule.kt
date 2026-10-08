@@ -3,6 +3,7 @@ package com.bioscanner.di
 import android.content.Context
 import androidx.room.Room
 import com.bioscanner.data.local.db.BioScannerDatabase
+import com.bioscanner.data.local.db.ObservationDao
 import com.bioscanner.data.local.db.SpeciesDao
 import dagger.Module
 import dagger.Provides
@@ -30,4 +31,7 @@ object TestDatabaseModule {
 
     @Provides
     fun provideSpeciesDao(database: BioScannerDatabase): SpeciesDao = database.speciesDao()
+
+    @Provides
+    fun provideObservationDao(database: BioScannerDatabase): ObservationDao = database.observationDao()
 }
