@@ -1,12 +1,15 @@
 package com.bioscanner.di
 
 import android.content.Context
-import androidx.room.Room
 import com.bioscanner.data.local.db.BioScannerDatabase
-import com.bioscanner.data.local.db.DatabaseCallback
-import com.bioscanner.data.local.db.MIGRATION_2_3
 import com.bioscanner.data.local.db.ObservationDao
+import com.bioscanner.data.local.db.SeedingCallback
 import com.bioscanner.data.local.db.SpeciesDao
+import com.bioscanner.data.local.db.configure
+import com.bioscanner.data.local.seed.SpeciesSeedLoader
+import com.bioscanner.data.platform.ResourceReader
+import com.bioscanner.data.platform.SharedPrefsSeedVersionStore
+import com.bioscanner.data.platform.androidDatabaseBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,8 +18,6 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import javax.inject.Provider
 import javax.inject.Singleton
-
-private const val DATABASE_NAME = "bioscanner.db"
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -27,14 +28,16 @@ object DatabaseModule {
     fun provideDatabase(
         @ApplicationContext context: Context,
         @ApplicationScope scope: CoroutineScope,
+        resources: ResourceReader,
         databaseProvider: Provider<BioScannerDatabase>,
-    ): BioScannerDatabase = Room.databaseBuilder(context, BioScannerDatabase::class.java, DATABASE_NAME)
-        .addCallback(DatabaseCallback(context, scope, databaseProvider))
-        .addMigrations(MIGRATION_2_3)
-        // Só a v1 pode ser recriada do zero: ela tinha apenas o seed dos
-        // assets. Da v2 em diante há registros do usuário → só Migration.
-        .fallbackToDestructiveMigrationFrom(dropAllTables = true, 1)
-        .build()
+    ): BioScannerDatabase = androidDatabaseBuilder(context).configure(
+        SeedingCallback(
+            seedLoader = SpeciesSeedLoader(resources),
+            versionStore = SharedPrefsSeedVersionStore(context),
+            scope = scope,
+            database = { databaseProvider.get() },
+        ),
+    )
 
     @Provides
     fun provideSpeciesDao(database: BioScannerDatabase): SpeciesDao = database.speciesDao()

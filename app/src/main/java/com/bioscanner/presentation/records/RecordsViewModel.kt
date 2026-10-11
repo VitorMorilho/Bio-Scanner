@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.bioscanner.domain.model.Observation
 import com.bioscanner.domain.repository.ObservationRepository
 import com.bioscanner.domain.repository.RegionRepository
-import com.bioscanner.presentation.common.regionNameAt
+import com.bioscanner.domain.model.regionNameAt
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

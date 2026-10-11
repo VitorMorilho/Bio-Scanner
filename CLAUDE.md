@@ -20,9 +20,12 @@ modeling now so this isn't a rewrite later:
 - Don't over-engineer for future categories the user hasn't asked for yet — just avoid names/
   structures that would lock the app into snakes only.
 
-iOS is not a current priority. Keep business/domain logic free of Android-UI-only assumptions
-where reasonable, in case of a future Kotlin Multiplatform migration — but do not implement
-anything iOS-related now.
+iOS is being added via **Kotlin Multiplatform**, in phases (the user has no Mac — iOS code can
+only be compiled, not run, on this Linux machine):
+1. **Done:** `shared/` KMP module with domain, data, Room and seed loading; the Android app uses it.
+2. Next: screens in Compose Multiplatform (Hilt → Koin, multiplatform navigation/ViewModel),
+   platform pieces (camera, photo picker, location, EXIF, files) behind interfaces.
+3. Then: Xcode project in `ios/` + GitHub Actions macOS runner to build it (repo is public).
 
 ## Project status
 
@@ -43,7 +46,11 @@ configured — set `user.name`/`user.email` locally in this repo before committi
 
 ## Commands
 
-This is a Gradle project; use the wrapper (`./gradlew`) from the repo root.
+This is a Gradle project; use the wrapper (`./gradlew`) from the repo root. Android Studio's JBR
+works as JDK: `export JAVA_HOME=/snap/android-studio/current/jbr`.
+
+- Shared module unit tests (commonTest, run on the JVM): `./gradlew :shared:testAndroidHostTest`
+- Compile shared for iOS on Linux (klibs only; needs no Mac): `./gradlew :shared:compileKotlinIosArm64 :shared:compileKotlinIosSimulatorArm64 :shared:compileTestKotlinIosSimulatorArm64`
 
 - Build debug APK: `./gradlew assembleDebug`
 - Run local (JVM) unit tests: `./gradlew test`
@@ -55,15 +62,25 @@ This is a Gradle project; use the wrapper (`./gradlew`) from the repo root.
 
 ## Architecture
 
-- Single module: `app` (applicationId/namespace `com.bioscanner`).
+- Modules: `app` (Android app, applicationId/namespace `com.bioscanner`: UI, Hilt, and Android
+  implementations of platform ports) and `shared` (Kotlin Multiplatform library — android + iosArm64
+  + iosSimulatorArm64 — with `domain/`, `data/` (Room KMP, seed/regions parsing, repositories) and
+  `data/platform/` ports `ResourceReader`/`SeedVersionStore` with androidMain/iosMain impls).
+  Packages kept the same names when moved, so `com.bioscanner.domain.*`/`data.*` live in `shared`.
+  Code in `shared/commonMain` must be pure Kotlin: no `java.*`, no `android.*`, no `javax.inject`
+  (Hilt wires shared classes via `@Provides` in `app/di/`), no `System.currentTimeMillis` (inject a
+  clock). Tests there use `kotlin.test`; backticked test names can't contain `,` or `()` on iOS.
+- Kotlin is **2.3.21** (declared over AGP 9's bundled 2.2.10): kotlinx libraries 1.11 are published
+  with Kotlin 2.3 and the 2.2 Kotlin/Native compiler can't read their klibs.
+  `kotlin.native.enableKlibsCrossCompilation=true` (gradle.properties) lets iOS klibs compile on Linux.
 - UI is Jetpack Compose only (no XML layouts).
 - Theming lives in `app/src/main/java/com/bioscanner/ui/theme/` (`Color.kt`, `Theme.kt`, `Type.kt`)
   — `BioScannerTheme` wraps all Compose content and should be reused for any new screens.
 - Dependency versions are centralized in the Gradle version catalog at
   `gradle/libs.versions.toml`; add new dependencies there rather than hardcoding versions in
   `app/build.gradle.kts`.
-- Build config: compileSdk 36, minSdk 24, targetSdk 36, Kotlin 2.0.21 (compose compiler plugin;
-  AGP 9's built-in Kotlin, not `org.jetbrains.kotlin.android`), AGP 9.1.1, Java 11
+- Build config: compileSdk 36, minSdk 24, targetSdk 36 (app: AGP 9's built-in Kotlin, not
+  `org.jetbrains.kotlin.android`; shared: `com.android.kotlin.multiplatform.library`), AGP 9.1.1, Java 11
   source/target compatibility, KSP `2.3.12` (decoupled version, not Kotlin-prefixed — AGP 9's
   built-in Kotlin rejects the old `<kotlin>-<ksp>` versioning), Hilt `2.59.2` (first Hilt
   version with real AGP 9 support; anything older fails with "Android BaseExtension not found"
@@ -83,16 +100,19 @@ This is a Gradle project; use the wrapper (`./gradlew`) from the repo root.
   storage permission on scoped-storage-era Android. Gallery uses
   `ActivityResultContracts.PickVisualMedia()` (modern photo picker). Camera permission is
   optional at runtime — if denied, gallery picking still works.
-- Local database: Room v3 (`data/local/db/`): flat `species` table (every field 1:1 with a
+- Local database: Room KMP v3 (`shared/.../data/local/db/`, schemas in `shared/schemas/`), with
+  `BundledSQLiteDriver` on both platforms; common config in `BioScannerDatabase.configure()`,
+  per-platform builders `androidDatabaseBuilder`/`iosDatabaseBuilder`. Migrations use the
+  `SQLiteConnection` API (not `SupportSQLiteDatabase`). Tables: flat `species` table (every field 1:1 with a
   species; curated fields are nullable) + `species_region` N:N join (species × UF, with GBIF
   occurrence counts) + `observation` (the user's records; its `status`/`speciesId`/`confidence` columns are leftovers
   from the dropped analysis flow, kept to avoid another migration — `status` is always `SAVED`). `classifierLabel` is a separate column
   from `id`, since a real model's label taxonomy may not match the DB's internal slugs 1:1.
-  `species`/`species_region` are asset-derived: `DatabaseCallback.onOpen` replaces them whenever
-  the seed's `version` hash differs from the one stored in SharedPreferences (it never touches
+  `species`/`species_region` are asset-derived: `SeedingCallback.onOpen` replaces them whenever
+  the seed's `version` hash differs from the one in `SeedVersionStore` (SharedPreferences / NSUserDefaults) (it never touches
   `observation`). **`observation` is user data: every schema change needs a `Migration`** (see
   `MIGRATION_2_3` and `androidTest/.../MigrationTest`, which validates against
-  `app/schemas/`); destructive fallback is only allowed from v1. `observation.speciesId` is
+  `shared/schemas/`); destructive fallback is only allowed from v1. `observation.speciesId` is
   deliberately not a FK, since reseeding deletes and reinserts species.
 - Observations (`domain/observation/` ports, `data/observation/` impls, bound in
   `ObservationModule`): `CaptureMetadataProvider` (camera photo → now + device location; gallery

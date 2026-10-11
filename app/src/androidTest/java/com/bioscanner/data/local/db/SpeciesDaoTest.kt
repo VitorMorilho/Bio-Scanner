@@ -1,8 +1,10 @@
 package com.bioscanner.data.local.db
 
 import androidx.room.Room
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -36,8 +38,9 @@ class SpeciesDaoTest {
     @Before
     fun setUp() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        db = Room.inMemoryDatabaseBuilder(context, BioScannerDatabase::class.java)
-            .allowMainThreadQueries()
+        db = Room.inMemoryDatabaseBuilder<BioScannerDatabase>(context)
+            .setDriver(BundledSQLiteDriver())
+            .setQueryCoroutineContext(Dispatchers.IO)
             .build()
         dao = db.speciesDao()
     }

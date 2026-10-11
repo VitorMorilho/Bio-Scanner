@@ -7,7 +7,7 @@ import com.bioscanner.domain.model.Observation
 import com.bioscanner.domain.repository.ObservationRepository
 import com.bioscanner.domain.repository.RegionRepository
 import com.bioscanner.domain.usecase.DeleteObservationUseCase
-import com.bioscanner.presentation.common.regionNameAt
+import com.bioscanner.domain.model.regionNameAt
 import com.bioscanner.presentation.navigation.Routes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow

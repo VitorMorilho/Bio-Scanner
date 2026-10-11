@@ -5,12 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bioscanner.domain.model.Species
 import com.bioscanner.domain.repository.SpeciesRepository
+import com.bioscanner.domain.search.matches
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import java.text.Normalizer
 import javax.inject.Inject
 
 private const val KEY_QUERY = "query"
@@ -44,20 +44,3 @@ class SpeciesSearchViewModel @Inject constructor(
         savedStateHandle[KEY_QUERY] = query
     }
 }
-
-/**
- * Busca sem acento e sem maiúsculas em nome popular, científico, nomes
- * alternativos e família — "jararaca" acha "Jararacuçu", "boipeva" acha
- * Xenodon merremii pelo nome alternativo.
- */
-internal fun Species.matches(query: String): Boolean {
-    val q = query.normalizedForSearch()
-    if (q.isEmpty()) return true
-    return (listOfNotNull(popularName, scientificName, family) + otherNames)
-        .any { it.normalizedForSearch().contains(q) }
-}
-
-private fun String.normalizedForSearch(): String =
-    Normalizer.normalize(trim(), Normalizer.Form.NFD)
-        .replace(Regex("\\p{M}"), "")
-        .lowercase()

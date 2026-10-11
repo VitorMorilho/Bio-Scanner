@@ -8,7 +8,7 @@ import com.bioscanner.domain.model.CaptureMetadata
 import com.bioscanner.domain.observation.CaptureMetadataProvider
 import com.bioscanner.domain.repository.RegionRepository
 import com.bioscanner.domain.usecase.RegisterObservationUseCase
-import com.bioscanner.presentation.common.regionNameAt
+import com.bioscanner.domain.model.regionNameAt
 import com.bioscanner.presentation.navigation.Routes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
