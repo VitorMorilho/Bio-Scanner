@@ -18,4 +18,7 @@ interface PhotoStorage {
 
     /** Apaga a cópia salva por [import]. Não falha se o arquivo já não existir. */
     suspend fun delete(photoPath: String)
+
+    /** Apaga todas as cópias salvas (exclusão de conta). */
+    suspend fun deleteAll()
 }

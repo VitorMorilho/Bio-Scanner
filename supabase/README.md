@@ -20,11 +20,23 @@ só no aparelho, no Room.
 
 ## Configurar o Auth (painel → Authentication)
 
-- **Email:** deixe "Confirm email" ligado.
+- **Email:** deixe "Confirm email" ligado e ponha **8** em "Minimum password length" (mesmo
+  valor de `MIN_PASSWORD_LENGTH` no app).
+- **Templates de email** (Authentication → Emails): o app confirma o cadastro e recupera a senha
+  com um **código digitado no app**, não com link. Assim não precisamos de deep link nem de
+  página web. Nos templates "Confirm signup" e "Reset Password", troque o link por
+  `{{ .Token }}`, por exemplo: `<p>Seu código do BioScanner: <strong>{{ .Token }}</strong></p>`.
 - **Google:** ative o provedor e informe o *Client ID* do OAuth Client do tipo **Web** do Google
   Cloud. No Android também é preciso um OAuth Client do tipo **Android** com o SHA-1 do
   certificado; ele não vai no Supabase, só precisa existir no mesmo projeto do Google Cloud.
-- O app usa só a URL do projeto e a **anon key**. A `service_role` nunca vai para o app.
+- O app usa só a URL do projeto e a **anon key**, lidas do `local.properties` (que fica fora do
+  git):
+  ```properties
+  supabase.url=https://<ref>.supabase.co
+  supabase.anonKey=<anon key>
+  ```
+  Sem essas chaves o app funciona normalmente, mas as ações de conta falham com `NOT_CONFIGURED`.
+  A `service_role` nunca vai para o app.
 
 ## Testar a exclusão
 

@@ -121,6 +121,13 @@ This is a Gradle project; use the wrapper (`./gradlew`) from the repo root.
   hard-deletes the caller's account with the service_role (never shipped in the app). Observations
   stay local; deleting the account must also wipe `observation` + `filesDir/observations/`. Any
   future server table with user data must reference `auth.users(id) ON DELETE CASCADE`.
+  App side: `domain/auth/` (`AuthRepository`, errors as `AuthException(AuthError)`, input
+  validation), `data/auth/SupabaseAuthRepository` (supabase-kt **3.6.0**, pinned: 3.7+ is built with
+  Kotlin 2.4, which AGP 9.1's built-in Kotlin can't read), `di/AuthModule`, and
+  `DeleteAccountUseCase` (server first, then local data). Sign-up confirmation and password reset
+  use emailed numeric codes typed in the app (no deep links). Credentials come from
+  `local.properties` (`supabase.url`, `supabase.anonKey`) → `BuildConfig`; without them account
+  actions fail with `AuthError.NOT_CONFIGURED` and the rest of the app works.
 - Async: Kotlin Coroutines + Flow (`SpeciesRepository` exposes data via `Flow`).
 - Navigation: Navigation Compose, routes in `presentation/navigation/Routes.kt`.
 - Glossary "Por região" tab (`presentation/glossary/region/`): Canvas-drawn map of the 27

@@ -68,6 +68,12 @@ class InternalPhotoStorage @Inject constructor(
         }
     }
 
+    override suspend fun deleteAll() {
+        withContext(Dispatchers.IO) {
+            File(context.filesDir, PHOTOS_DIR).deleteRecursively()
+        }
+    }
+
     private fun exifRotation(exif: ExifInterface): Int =
         when (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
             ExifInterface.ORIENTATION_ROTATE_90 -> 90
