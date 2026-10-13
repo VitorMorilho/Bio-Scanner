@@ -115,6 +115,12 @@ This is a Gradle project; use the wrapper (`./gradlew`) from the repo root.
     check rejects. Only the core `org.tensorflow:tensorflow-lite` interpreter is used; image
     preprocessing for the real classifier will need to be done manually via `ByteBuffer` instead
     of the support library's helper classes.
+- Accounts (in progress on `feature/login`): optional login via Supabase Auth (email + password
+  and Google). Server side lives in `supabase/` (see its README): `profiles` table (RLS, created by
+  a trigger on `auth.users`, `ON DELETE CASCADE`) and the `delete-account` Edge Function, which
+  hard-deletes the caller's account with the service_role (never shipped in the app). Observations
+  stay local; deleting the account must also wipe `observation` + `filesDir/observations/`. Any
+  future server table with user data must reference `auth.users(id) ON DELETE CASCADE`.
 - Async: Kotlin Coroutines + Flow (`SpeciesRepository` exposes data via `Flow`).
 - Navigation: Navigation Compose, routes in `presentation/navigation/Routes.kt`.
 - Glossary "Por região" tab (`presentation/glossary/region/`): Canvas-drawn map of the 27
