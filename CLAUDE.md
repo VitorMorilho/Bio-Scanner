@@ -32,8 +32,8 @@ records; there is **no species identification/analysis in the flow anymore** (th
 both instant identification and "send for analysis"). The classifier stack (`ImageClassifier`,
 `MockImageClassifier`, `ClassifyAndLookupSpeciesUseCase`, `ConfidenceBadge`) is kept but
 currently unused by any screen, pending the real model. Bottom nav: Registrar · Glossário
-(species search + map by state) · Meus registros (mocked user area listing the observations —
-no login yet). No real
+(species search + map by state) · Meus registros (user card with optional login + the list of
+observations). No real
 dataset or trained `.tflite` model exists yet. Species content is real: ~380 Brazilian snake
 species from GBIF, one open-license photo each (iNaturalist), and hand-curated text for the
 species filled in `tools/data/especies.csv` (see "Species data pipeline").
@@ -128,6 +128,13 @@ This is a Gradle project; use the wrapper (`./gradlew`) from the repo root.
   use emailed numeric codes typed in the app (no deep links). Credentials come from
   `local.properties` (`supabase.url`, `supabase.anonKey`) → `BuildConfig`; without them account
   actions fail with `AuthError.NOT_CONFIGURED` and the rest of the app works.
+  UI: `presentation/auth/` — one `Routes.AUTH` screen whose `AuthViewModel` walks `AuthStep`s
+  (sign in → sign up → confirm code / forgot → reset) and emits `done` once `currentUser` is
+  non-null; the user card in `RecordsScreen` shows sign in, or sign out / delete account (with
+  confirmation). Google uses Credential Manager (`GetSignInWithGoogleOption` + `GoogleNonce`:
+  SHA-256 to Google, raw to Supabase); the button only shows when `google.webClientId` is set in
+  `local.properties`. `googleid` is pinned to **1.1.1** (1.2.x is built with Kotlin 2.4, same issue
+  as supabase-kt). Instrumented tests replace `AuthModule` with `TestAuthModule` (always signed out).
 - Async: Kotlin Coroutines + Flow (`SpeciesRepository` exposes data via `Flow`).
 - Navigation: Navigation Compose, routes in `presentation/navigation/Routes.kt`.
 - Glossary "Por região" tab (`presentation/glossary/region/`): Canvas-drawn map of the 27

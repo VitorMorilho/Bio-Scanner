@@ -6,6 +6,7 @@ object Routes {
     const val GLOSSARY = "glossary"
     const val RECORDS = "records"
     const val CAPTURE = "capture"
+    const val AUTH = "auth"
 
     const val REGISTER_ARG_PHOTO_URI = "photoUri"
     const val REGISTER_ARG_FROM_CAMERA = "fromCamera"

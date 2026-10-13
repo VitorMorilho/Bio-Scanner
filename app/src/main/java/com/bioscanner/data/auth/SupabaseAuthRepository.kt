@@ -34,6 +34,7 @@ private const val DELETE_ACCOUNT_FUNCTION = "delete-account"
 class SupabaseAuthRepository @Inject constructor(
     private val supabase: SupabaseClient,
     private val config: SupabaseConfig,
+    private val googleCredentials: GoogleCredentialCleaner,
 ) : AuthRepository {
 
     private val auth get() = supabase.auth
@@ -105,12 +106,14 @@ class SupabaseAuthRepository @Inject constructor(
             // não pode depender de rede. O refresh token expira sozinho no servidor.
             auth.clearSession()
         }
+        googleCredentials.clear()
     }
 
     override suspend fun deleteAccount() = call {
         supabase.functions.invoke(DELETE_ACCOUNT_FUNCTION)
         // A conta não existe mais; chamar logout no servidor só daria erro.
         auth.clearSession()
+        googleCredentials.clear()
     }
 
     private suspend fun <T> call(block: suspend () -> T): T {

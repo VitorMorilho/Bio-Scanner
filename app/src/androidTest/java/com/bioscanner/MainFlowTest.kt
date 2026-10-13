@@ -121,7 +121,7 @@ class MainFlowTest {
         composeRule.waitUntil(timeoutMillis = 5_000) {
             composeRule.onAllNodesWithText("Mato Grosso").fetchSemanticsNodes().isNotEmpty()
         }
-        composeRule.onNodeWithText("Usuário de demonstração").assertExists()
+        composeRule.onNodeWithText("Entrar ou criar conta").assertExists()
     }
 
     @Test

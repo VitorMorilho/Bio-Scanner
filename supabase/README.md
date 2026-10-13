@@ -34,6 +34,9 @@ só no aparelho, no Room.
   ```properties
   supabase.url=https://<ref>.supabase.co
   supabase.anonKey=<anon key>
+  # Client ID do OAuth Client tipo Web (o mesmo do provedor Google acima). Sem ele, o botão
+  # "Continuar com Google" não aparece.
+  google.webClientId=<id>.apps.googleusercontent.com
   ```
   Sem essas chaves o app funciona normalmente, mas as ações de conta falham com `NOT_CONFIGURED`.
   A `service_role` nunca vai para o app.

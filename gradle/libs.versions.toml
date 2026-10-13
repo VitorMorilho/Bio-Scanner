@@ -21,6 +21,9 @@ kotlinxSerializationJson = "1.11.0"
 # 3.7+ é compilado com Kotlin 2.4, que o Kotlin embutido do AGP 9.1 (2.2) não lê.
 supabase = "3.6.0"
 ktor = "3.4.3"
+credentials = "1.6.0"
+# 1.2.x é compilado com Kotlin 2.4 (ilegível para o Kotlin 2.2 do AGP 9.1), como o supabase-kt 3.7+.
+googleId = "1.1.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -67,6 +70,9 @@ supabase-bom = { group = "io.github.jan-tennert.supabase", name = "bom", version
 supabase-auth = { group = "io.github.jan-tennert.supabase", name = "auth-kt" }
 supabase-functions = { group = "io.github.jan-tennert.supabase", name = "functions-kt" }
 ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
+androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "credentials" }
+androidx-credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "credentials" }
+googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleId" }
 mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockitoCore" }
 
 [plugins]
