@@ -21,7 +21,7 @@ import java.util.concurrent.Executor
 
 @Composable
 fun CaptureScreen(
-    onImageReady: (Uri) -> Unit,
+    onPhotoReady: (CapturedPhoto) -> Unit,
     viewModel: CaptureViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -31,11 +31,11 @@ fun CaptureScreen(
     val galleryLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.PickVisualMedia(),
     ) { uri ->
-        if (uri != null) viewModel.onImageReady(uri)
+        if (uri != null) viewModel.onImageReady(uri, fromCamera = false)
     }
 
     LaunchedEffect(Unit) {
-        viewModel.navigateToResult.collect { uri -> onImageReady(uri) }
+        viewModel.photoReady.collect(onPhotoReady)
     }
 
     Scaffold { innerPadding ->
@@ -50,7 +50,7 @@ fun CaptureScreen(
                 Button(
                     onClick = {
                         imageCapture?.let { capture ->
-                            takePicture(context, capture) { uri -> viewModel.onImageReady(uri) }
+                            takePicture(context, capture) { uri -> viewModel.onImageReady(uri, fromCamera = true) }
                         }
                     },
                     modifier = Modifier.fillMaxWidth().padding(16.dp),

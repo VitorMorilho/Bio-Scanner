@@ -13,3 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Cache do tools/data/build_species_data.py (respostas do GBIF e créditos das fotos)
+tools/data/.cache
+__pycache__/

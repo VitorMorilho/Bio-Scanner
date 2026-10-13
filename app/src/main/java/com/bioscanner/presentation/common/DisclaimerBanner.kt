@@ -18,7 +18,12 @@ import androidx.compose.ui.unit.dp
  * identificação automática é apenas uma sugestão, nunca um diagnóstico.
  */
 @Composable
-fun DisclaimerBanner(modifier: Modifier = Modifier) {
+fun DisclaimerBanner(
+    modifier: Modifier = Modifier,
+    text: String = "Esta identificação é apenas uma sugestão automática e não substitui " +
+        "avaliação de um profissional ou atendimento médico. Em caso de picada, " +
+        "procure ajuda médica imediatamente.",
+) {
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
@@ -34,9 +39,7 @@ fun DisclaimerBanner(modifier: Modifier = Modifier) {
                 tint = MaterialTheme.colorScheme.onErrorContainer,
             )
             Text(
-                text = "Esta identificação é apenas uma sugestão automática e não substitui " +
-                    "avaliação de um profissional ou atendimento médico. Em caso de picada, " +
-                    "procure ajuda médica imediatamente.",
+                text = text,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onErrorContainer,
                 modifier = Modifier.padding(start = 8.dp),

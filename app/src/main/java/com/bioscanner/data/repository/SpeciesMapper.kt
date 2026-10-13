@@ -16,6 +16,12 @@ fun SpeciesEntity.toDomain(): Species = Species(
     geographicDistribution = geographicDistribution,
     firstAidProcedure = firstAidProcedure,
     referenceImagePath = referenceImagePath,
+    otherNames = otherNames.split(SpeciesEntity.OTHER_NAMES_SEPARATOR).filter { it.isNotBlank() },
+    dentition = dentition,
+    diet = diet,
+    activityPeriod = activityPeriod,
+    defensiveBehavior = defensiveBehavior,
+    imageCredit = imageCredit,
 )
 
 private fun String.toRiskLevel(): RiskLevel =
