@@ -146,7 +146,9 @@ This is a Gradle project; use the wrapper (`./gradlew`) from the repo root.
   don't check (`UPDATE_REPOSITORY` is empty). To publish: bump `versionCode` **and** `versionName`,
   `assembleRelease`, `zipalign` + `apksigner` with `~/.android/debug.keystore` (no release key yet —
   always sign on this machine, or installed copies can't update in place), then
-  `gh release create v<versionName>-teste <apk> --prerelease`.
+  `gh release create v<versionName>-teste BioScanner.apk --latest` (**not** prerelease, and the
+  asset always named `BioScanner.apk`: the README's download button points to
+  `releases/latest/download/BioScanner.apk`, which skips prereleases).
 - Async: Kotlin Coroutines + Flow (`SpeciesRepository` exposes data via `Flow`).
 - Navigation: Navigation Compose, routes in `presentation/navigation/Routes.kt`.
 - Glossary "Por região" tab (`presentation/glossary/region/`): Canvas-drawn map of the 27
