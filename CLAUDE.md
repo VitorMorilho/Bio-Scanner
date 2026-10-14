@@ -125,7 +125,11 @@ This is a Gradle project; use the wrapper (`./gradlew`) from the repo root.
   validation), `data/auth/SupabaseAuthRepository` (supabase-kt **3.6.0**, pinned: 3.7+ is built with
   Kotlin 2.4, which AGP 9.1's built-in Kotlin can't read), `di/AuthModule`, and
   `DeleteAccountUseCase` (server first, then local data). Sign-up confirmation and password reset
-  use emailed numeric codes typed in the app (no deep links). Credentials come from
+  use emailed numeric codes typed in the app (no deep links) — **currently off**: without a custom
+  SMTP the free tier can't send them, so `enable_confirmations = false` in `supabase/config.toml`
+  (templates commented out) and `auth.emailCodes=false` in `local.properties` hides "Esqueci minha
+  senha". Turn all three back on together once SMTP exists. Passwords need 8+ chars with letters
+  and digits (`password_requirements`, mirrored in `validatePassword`). Credentials come from
   `local.properties` (`supabase.url`, `supabase.anonKey`) → `BuildConfig`; without them account
   actions fail with `AuthError.NOT_CONFIGURED` and the rest of the app works.
   UI: `presentation/auth/` — one `Routes.AUTH` screen whose `AuthViewModel` walks `AuthStep`s

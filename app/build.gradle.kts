@@ -35,6 +35,9 @@ android {
         buildConfigField("String", "SUPABASE_ANON_KEY", "\"${localProperties.getProperty("supabase.anonKey", "")}\"")
         // Client ID do OAuth Client tipo *Web* (o mesmo informado no Supabase). Vazio = sem botão do Google.
         buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"${localProperties.getProperty("google.webClientId", "")}\"")
+        // true só quando o Supabase tiver SMTP próprio e templates com código; sem isso a
+        // recuperação de senha por email não chega ao usuário, então a opção fica escondida.
+        buildConfigField("boolean", "EMAIL_CODES_ENABLED", localProperties.getProperty("auth.emailCodes", "false"))
     }
 
     buildTypes {

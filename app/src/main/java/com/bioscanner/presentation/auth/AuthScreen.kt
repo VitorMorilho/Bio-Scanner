@@ -169,8 +169,10 @@ fun AuthScreen(
 
             when (state.step) {
                 AuthStep.SIGN_IN -> {
-                    TextButton(onClick = { viewModel.goTo(AuthStep.FORGOT_PASSWORD) }, enabled = !busy) {
-                        Text("Esqueci minha senha")
+                    if (BuildConfig.EMAIL_CODES_ENABLED) {
+                        TextButton(onClick = { viewModel.goTo(AuthStep.FORGOT_PASSWORD) }, enabled = !busy) {
+                            Text("Esqueci minha senha")
+                        }
                     }
                     if (googleEnabled) GoogleSection(busy = busy, googleInProgress = googleInProgress, onClick = onGoogleClick)
                     SwitchStep("Não tem conta?", "Criar conta", enabled = !busy) { viewModel.goTo(AuthStep.SIGN_UP) }
@@ -190,7 +192,11 @@ fun AuthScreen(
 
 private fun AuthStep.texts(): Pair<String, String> = when (this) {
     AuthStep.SIGN_IN -> "Entrar" to "Sua conta é opcional. Os registros continuam salvos neste aparelho."
-    AuthStep.SIGN_UP -> "Criar conta" to "Leva menos de um minuto. Vamos enviar um código para confirmar seu email."
+    AuthStep.SIGN_UP -> "Criar conta" to if (BuildConfig.EMAIL_CODES_ENABLED) {
+        "Leva menos de um minuto. Vamos enviar um código para confirmar seu email."
+    } else {
+        "Leva menos de um minuto."
+    }
     AuthStep.CONFIRM_SIGN_UP -> "Confirme seu email" to "Digite o código que enviamos por email. Confira também a caixa de spam."
     AuthStep.FORGOT_PASSWORD -> "Recuperar senha" to "Informe o email da conta para receber um código."
     AuthStep.RESET_PASSWORD -> "Nova senha" to "Digite o código recebido por email e escolha uma nova senha."
@@ -272,7 +278,7 @@ private fun PasswordField(
         onValueChange = onValueChange,
         label = { Text(label) },
         isError = error != null,
-        supportingText = (error ?: if (isNew) "Mínimo de $MIN_PASSWORD_LENGTH caracteres." else null)?.let { { Text(it) } },
+        supportingText = (error ?: if (isNew) "Mínimo de $MIN_PASSWORD_LENGTH caracteres, com letras e números." else null)?.let { { Text(it) } },
         singleLine = true,
         visualTransformation = if (visible) VisualTransformation.None else PasswordVisualTransformation(),
         trailingIcon = {

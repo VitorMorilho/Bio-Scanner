@@ -22,5 +22,6 @@ fun CredentialsIssue.message(): String = when (this) {
     CredentialsIssue.NAME_TOO_LONG -> "Use no máximo $MAX_NAME_LENGTH caracteres."
     CredentialsIssue.EMAIL_INVALID -> "Informe um email válido."
     CredentialsIssue.PASSWORD_TOO_SHORT -> "A senha precisa ter pelo menos $MIN_PASSWORD_LENGTH caracteres."
+    CredentialsIssue.PASSWORD_NEEDS_LETTERS_AND_DIGITS -> "Use letras e números na senha."
     CredentialsIssue.CODE_INVALID -> "Digite o código numérico recebido por email."
 }

@@ -102,7 +102,7 @@ class AuthViewModelTest {
         viewModel.goTo(AuthStep.SIGN_UP)
         viewModel.onNameChange("Ana")
         viewModel.onEmailChange("ana@x.com")
-        viewModel.onPasswordChange("senha-segura")
+        viewModel.onPasswordChange("senha-segura-1")
 
         viewModel.submit()
 

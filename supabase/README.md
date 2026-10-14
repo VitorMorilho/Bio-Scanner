@@ -18,14 +18,20 @@ só no aparelho, no Room.
 `supabase link --project-ref <ref>`, depois `supabase db push` e
 `supabase functions deploy delete-account`.
 
-## Configurar o Auth (painel → Authentication)
+## Configurar o Auth
 
-- **Email:** deixe "Confirm email" ligado e ponha **8** em "Minimum password length" (mesmo
-  valor de `MIN_PASSWORD_LENGTH` no app).
-- **Templates de email** (Authentication → Emails): o app confirma o cadastro e recupera a senha
-  com um **código digitado no app**, não com link. Assim não precisamos de deep link nem de
-  página web. Nos templates "Confirm signup" e "Reset Password", troque o link por
-  `{{ .Token }}`, por exemplo: `<p>Seu código do BioScanner: <strong>{{ .Token }}</strong></p>`.
+A configuração do Auth fica em `config.toml` e vai para o projeto com `supabase config push`.
+
+- **Senha:** no mínimo 8 caracteres, com letras e números (`minimum_password_length` e
+  `password_requirements`). O `validatePassword` do app usa as mesmas regras.
+- **Confirmação de email: desligada por enquanto.** Sem SMTP próprio, o provedor padrão do
+  plano grátis só envia email para membros da organização (cerca de 2 por hora) e não aceita
+  templates personalizados. Enquanto isso, o cadastro já entra direto e o app esconde "Esqueci
+  minha senha" (`auth.emailCodes=false`).
+- **Com SMTP próprio** (Resend/Brevo com domínio verificado, ou Gmail com senha de app):
+  configure `[auth.email.smtp]` com a senha em `env(...)`, ligue `enable_confirmations` e
+  descomente os templates em `templates/`. Eles mostram só o código (`{{ .Token }}`), que é
+  digitado no app, sem deep link nem página web. No app, use `auth.emailCodes=true`.
 - **Google:** ative o provedor e informe o *Client ID* do OAuth Client do tipo **Web** do Google
   Cloud. No Android também é preciso um OAuth Client do tipo **Android** com o SHA-1 do
   certificado; ele não vai no Supabase, só precisa existir no mesmo projeto do Google Cloud.
@@ -37,6 +43,8 @@ só no aparelho, no Room.
   # Client ID do OAuth Client tipo Web (o mesmo do provedor Google acima). Sem ele, o botão
   # "Continuar com Google" não aparece.
   google.webClientId=<id>.apps.googleusercontent.com
+  # true só depois de ligar o SMTP e a confirmação por código (ver acima).
+  auth.emailCodes=false
   ```
   Sem essas chaves o app funciona normalmente, mas as ações de conta falham com `NOT_CONFIGURED`.
   A `service_role` nunca vai para o app.

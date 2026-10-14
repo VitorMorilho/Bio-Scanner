@@ -24,7 +24,9 @@ class CredentialsValidationTest {
     @Test
     fun `password has a minimum length`() {
         assertEquals(CredentialsIssue.PASSWORD_TOO_SHORT, validatePassword("a".repeat(MIN_PASSWORD_LENGTH - 1)))
-        assertNull(validatePassword("a".repeat(MIN_PASSWORD_LENGTH)))
+        assertEquals(CredentialsIssue.PASSWORD_NEEDS_LETTERS_AND_DIGITS, validatePassword("a".repeat(MIN_PASSWORD_LENGTH)))
+        assertEquals(CredentialsIssue.PASSWORD_NEEDS_LETTERS_AND_DIGITS, validatePassword("1".repeat(MIN_PASSWORD_LENGTH)))
+        assertNull(validatePassword("senha123"))
     }
 
     @Test
