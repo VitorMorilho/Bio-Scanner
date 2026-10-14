@@ -26,8 +26,8 @@ android {
         applicationId = "com.bioscanner"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
 
         testInstrumentationRunner = "com.bioscanner.CustomTestRunner"
 
@@ -41,7 +41,14 @@ android {
     }
 
     buildTypes {
+        // Aviso de atualização: o app procura APKs novos nas Releases deste repositório. A tag de
+        // cada release começa com o versionName (ex.: v1.1-teste), e versionCode/versionName
+        // precisam subir a cada versão publicada. Só no release: em debug o aviso atrapalharia.
+        debug {
+            buildConfigField("String", "UPDATE_REPOSITORY", "\"\"")
+        }
         release {
+            buildConfigField("String", "UPDATE_REPOSITORY", "\"VitorMorilho/Bio-Scanner\"")
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }

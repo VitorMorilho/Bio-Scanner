@@ -1,5 +1,15 @@
 # BioScanner
 
+## 📲 Baixar o app (Android)
+
+**[⬇️ Baixar BioScanner.apk (versão mais recente)](https://github.com/VitorMorilho/Bio-Scanner/releases/latest/download/BioScanner.apk)**
+
+Versão de teste. No celular, abra o arquivo baixado e, se pedir, permita "instalar apps
+desconhecidos". O app avisa sozinho quando sai uma versão nova. Histórico de versões em
+[Releases](https://github.com/VitorMorilho/Bio-Scanner/releases).
+
+---
+
 App Android (Kotlin + Jetpack Compose) que identifica espécies de animais/plantas a partir de
 uma foto: o usuário tira/seleciona a foto, um modelo TensorFlow Lite on-device classifica a
 espécie, e o app busca a descrição completa no banco Room local.
