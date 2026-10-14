@@ -1,9 +1,17 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.android)
+}
+
+// Credenciais do Supabase ficam no local.properties (fora do git). A anon key é pública por
+// natureza (protegida pelas regras RLS); a service_role NUNCA entra aqui.
+val localProperties = Properties().apply {
+    rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
 }
 
 android {
@@ -22,6 +30,14 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "com.bioscanner.CustomTestRunner"
+
+        buildConfigField("String", "SUPABASE_URL", "\"${localProperties.getProperty("supabase.url", "")}\"")
+        buildConfigField("String", "SUPABASE_ANON_KEY", "\"${localProperties.getProperty("supabase.anonKey", "")}\"")
+        // Client ID do OAuth Client tipo *Web* (o mesmo informado no Supabase). Vazio = sem botão do Google.
+        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"${localProperties.getProperty("google.webClientId", "")}\"")
+        // true só quando o Supabase tiver SMTP próprio e templates com código; sem isso a
+        // recuperação de senha por email não chega ao usuário, então a opção fica escondida.
+        buildConfigField("boolean", "EMAIL_CODES_ENABLED", localProperties.getProperty("auth.emailCodes", "false"))
     }
 
     buildTypes {
@@ -36,6 +52,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     // Schemas exportados do Room ficam disponíveis para o MigrationTestHelper.
     sourceSets {
@@ -84,6 +101,14 @@ dependencies {
 
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.serialization.json)
+
+    implementation(platform(libs.supabase.bom))
+    implementation(libs.supabase.auth)
+    implementation(libs.supabase.functions)
+    implementation(libs.ktor.client.okhttp)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
