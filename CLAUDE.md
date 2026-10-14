@@ -139,6 +139,14 @@ This is a Gradle project; use the wrapper (`./gradlew`) from the repo root.
   SHA-256 to Google, raw to Supabase); the button only shows when `google.webClientId` is set in
   `local.properties`. `googleid` is pinned to **1.1.1** (1.2.x is built with Kotlin 2.4, same issue
   as supabase-kt). Instrumented tests replace `AuthModule` with `TestAuthModule` (always signed out).
+- Test APK distribution: APKs go to GitHub **Releases** (prerelease, tag `v<versionName>-teste`,
+  e.g. `v1.1-teste`), never committed. Release builds check that repo's releases on startup
+  (`data/update/GitHubUpdateChecker`, list endpoint because `/releases/latest` skips prereleases)
+  and `presentation/update/UpdatePrompt` offers the newer APK, opened in the browser; debug builds
+  don't check (`UPDATE_REPOSITORY` is empty). To publish: bump `versionCode` **and** `versionName`,
+  `assembleRelease`, `zipalign` + `apksigner` with `~/.android/debug.keystore` (no release key yet —
+  always sign on this machine, or installed copies can't update in place), then
+  `gh release create v<versionName>-teste <apk> --prerelease`.
 - Async: Kotlin Coroutines + Flow (`SpeciesRepository` exposes data via `Flow`).
 - Navigation: Navigation Compose, routes in `presentation/navigation/Routes.kt`.
 - Glossary "Por região" tab (`presentation/glossary/region/`): Canvas-drawn map of the 27
