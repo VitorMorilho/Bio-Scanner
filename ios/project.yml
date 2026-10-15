@@ -41,6 +41,9 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.bioscanner.ios
+        # O shared só tem iosArm64 e iosSimulatorArm64: sem simulador Intel (x86_64). Com as duas
+        # arquiteturas, a sincronização de recursos do Compose não acha o alvo e falha.
+        EXCLUDED_ARCHS[sdk=iphonesimulator*]: x86_64
         SUPABASE_URL: ""
         SUPABASE_ANON_KEY: ""
         # Framework "Shared" gerado pelo Gradle (shared/build.gradle.kts).
