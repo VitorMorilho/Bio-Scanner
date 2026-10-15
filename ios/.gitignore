@@ -1,0 +1,7 @@
+# Gerados pelo XcodeGen / Xcode
+*.xcodeproj/
+*.xcworkspace/
+DerivedData/
+build/
+# O XcodeGen regrava o Info.plist a partir do project.yml
+iosApp/Info.plist

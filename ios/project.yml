@@ -1,0 +1,56 @@
+# Projeto Xcode do app iOS, gerado pelo XcodeGen (o .xcodeproj não é versionado):
+#   brew install xcodegen && cd ios && xcodegen generate
+# O CI (.github/workflows/ios.yml) faz isso e compila para o simulador.
+name: BioScanner
+options:
+  bundleIdPrefix: com.bioscanner
+  deploymentTarget:
+    iOS: "16.0"
+settings:
+  base:
+    MARKETING_VERSION: "1.1"
+    CURRENT_PROJECT_VERSION: "2"
+targets:
+  BioScanner:
+    type: application
+    platform: iOS
+    # Gera o scheme "BioScanner" (o xcodebuild do CI usa -scheme).
+    scheme: {}
+    sources:
+      - path: iosApp
+      # Mesmos dados do Android (seed, regiões, fotos das espécies), copiados como a pasta
+      # "assets" do bundle (ver BUNDLE_ASSETS_DIR em shared/src/iosMain).
+      - path: ../app/src/main/assets
+        type: folder
+        buildPhase: resources
+    info:
+      path: iosApp/Info.plist
+      properties:
+        CFBundleDisplayName: BioScanner
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        # Recomendado pelo Compose Multiplatform para animações a 120 Hz no ProMotion.
+        CADisableMinimumFrameDurationOnPhone: true
+        NSCameraUsageDescription: Para fotografar o animal que você encontrou.
+        NSLocationWhenInUseUsageDescription: Para registrar onde a foto foi tirada.
+        NSPhotoLibraryUsageDescription: Para escolher uma foto da galeria.
+        # Credenciais públicas do Supabase (a anon key é protegida pelas regras RLS), passadas
+        # no build: xcodebuild ... SUPABASE_URL=... SUPABASE_ANON_KEY=...; vazio = contas desligadas.
+        SupabaseUrl: $(SUPABASE_URL)
+        SupabaseAnonKey: $(SUPABASE_ANON_KEY)
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.bioscanner.ios
+        SUPABASE_URL: ""
+        SUPABASE_ANON_KEY: ""
+        # Framework "Shared" gerado pelo Gradle (shared/build.gradle.kts).
+        FRAMEWORK_SEARCH_PATHS: $(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)
+        OTHER_LDFLAGS: [-framework, Shared]
+        # O script do Gradle lê e escreve fora da pasta do projeto Xcode.
+        ENABLE_USER_SCRIPT_SANDBOXING: NO
+    preBuildScripts:
+      - name: Compilar o Kotlin (framework Shared)
+        basedOnDependencyAnalysis: false
+        script: |
+          cd "$SRCROOT/.."
+          ./gradlew :shared:embedAndSignAppleFrameworkForXcode

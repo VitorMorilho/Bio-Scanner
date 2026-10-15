@@ -2,6 +2,7 @@ package com.bioscanner.presentation.common
 
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
+import com.bioscanner.data.platform.BUNDLE_ASSETS_DIR
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.usePinned
@@ -25,7 +26,7 @@ import platform.posix.memcpy
 class IosImageLoader : ImageLoader {
 
     override suspend fun loadBundled(path: String): ImageBitmap? = withContext(Dispatchers.IO) {
-        val fullPath = NSBundle.mainBundle.resourcePath?.let { "$it/$path" } ?: return@withContext null
+        val fullPath = NSBundle.mainBundle.resourcePath?.let { "$it/$BUNDLE_ASSETS_DIR/$path" } ?: return@withContext null
         NSData.dataWithContentsOfFile(fullPath)?.decode()
     }
 

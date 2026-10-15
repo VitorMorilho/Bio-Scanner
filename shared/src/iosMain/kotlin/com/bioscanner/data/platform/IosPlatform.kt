@@ -30,13 +30,16 @@ fun iosDatabaseBuilder(): RoomDatabase.Builder<BioScannerDatabase> {
 }
 
 /**
- * Lê do bundle do app. Os arquivos de assets/ do Android são copiados para o
- * bundle mantendo as subpastas (ex.: "seed/species_seed.json") — ver projeto em ios/.
+ * Pasta do bundle com uma cópia de app/src/main/assets do Android (referência de pasta no
+ * projeto Xcode, ver ios/project.yml), mantendo as subpastas (ex.: "assets/seed/species_seed.json").
  */
+const val BUNDLE_ASSETS_DIR = "assets"
+
+/** Lê os mesmos arquivos que o Android lê de assets/, a partir do bundle do app. */
 @OptIn(ExperimentalForeignApi::class)
 class BundleResourceReader : ResourceReader {
     override suspend fun readText(path: String): String {
-        val fullPath = requireNotNull(NSBundle.mainBundle.resourcePath) { "Bundle sem resourcePath" } + "/$path"
+        val fullPath = requireNotNull(NSBundle.mainBundle.resourcePath) { "Bundle sem resourcePath" } + "/$BUNDLE_ASSETS_DIR/$path"
         return requireNotNull(
             NSString.stringWithContentsOfFile(fullPath, encoding = NSUTF8StringEncoding, error = null),
         ) { "Recurso não encontrado no bundle: $path" }

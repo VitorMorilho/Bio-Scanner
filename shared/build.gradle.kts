@@ -21,8 +21,14 @@ kotlin {
         minSdk = 24
         withHostTestBuilder {}
     }
-    iosArm64()
-    iosSimulatorArm64()
+    // Framework estático "Shared" consumido pelo app Xcode (ios/), gerado pela task
+    // embedAndSignAppleFrameworkForXcode na fase de build do Xcode.
+    listOf(iosArm64(), iosSimulatorArm64()).forEach { target ->
+        target.binaries.framework {
+            baseName = "Shared"
+            isStatic = true
+        }
+    }
 
     compilerOptions {
         // expect object do Room (BioScannerDatabaseConstructor).

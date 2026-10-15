@@ -1,0 +1,84 @@
+# Compila o app iOS num Mac do GitHub (não temos Mac): testes do shared no simulador, build do
+# app (projeto gerado pelo XcodeGen a partir de ios/project.yml), execução no simulador e
+# screenshots como artefato para conferir as telas.
+name: iOS
+
+on:
+  push:
+    branches: [main, feature/kmp-shared]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ios:
+    runs-on: macos-15
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      # O Gradle configura o módulo Android junto com o shared, então precisa do SDK.
+      - uses: android-actions/setup-android@v3
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Cache do Kotlin/Native
+        uses: actions/cache@v4
+        with:
+          path: ~/.konan
+          key: konan-${{ runner.os }}-${{ hashFiles('gradle/libs.versions.toml') }}
+
+      - name: Testes do shared no simulador iOS
+        run: ./gradlew :shared:iosSimulatorArm64Test --stacktrace
+
+      - name: Gerar o projeto Xcode
+        run: |
+          brew install xcodegen
+          cd ios && xcodegen generate
+
+      - name: Compilar o app para o simulador
+        run: |
+          xcodebuild \
+            -project ios/BioScanner.xcodeproj \
+            -scheme BioScanner \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath ios/build \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Abrir no simulador e tirar screenshots
+        run: |
+          mkdir -p screenshots
+          DEVICE=$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          devices = json.load(sys.stdin)["devices"]
+          iphones = [d for runtime, ds in devices.items() if "iOS" in runtime for d in ds if d["name"].startswith("iPhone")]
+          print(iphones[-1]["udid"])')
+          xcrun simctl boot "$DEVICE"
+          xcrun simctl bootstatus "$DEVICE" -b
+          xcrun simctl install "$DEVICE" ios/build/Build/Products/Debug-iphonesimulator/BioScanner.app
+          xcrun simctl launch "$DEVICE" com.bioscanner.ios
+          sleep 2
+          xcrun simctl io "$DEVICE" screenshot screenshots/1-abertura.png
+          # A abertura some sozinha em poucos segundos; o banco é semeado na primeira execução.
+          sleep 20
+          xcrun simctl io "$DEVICE" screenshot screenshots/2-inicio.png
+          xcrun simctl spawn "$DEVICE" log show --last 3m --predicate 'process == "BioScanner"' > screenshots/log.txt || true
+          # Falha se o app fechou (crash) durante a abertura.
+          xcrun simctl spawn "$DEVICE" launchctl list | grep -q com.bioscanner.ios
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ios-screenshots
+          path: screenshots/
