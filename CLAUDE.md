@@ -28,7 +28,13 @@ only be compiled, not run, on this Linux machine):
    Next: iOS implementations of the platform pieces (marked `TODO(iOS)`: camera/gallery screen,
    location permission, Google sign-in; plus `PhotoStorage`/`CaptureMetadataProvider` and an iOS
    Koin platform module), Sign in with Apple.
-3. Then: Xcode project in `ios/` + GitHub Actions macOS runner to build it (repo is public).
+3. **Done (builds, runs in the simulator):** `ios/project.yml` (XcodeGen; the `.xcodeproj` is
+   generated, not committed) + SwiftUI shell hosting `MainViewController()` (shared/iosMain, which
+   starts Koin with `iosPlatformModule`). Assets come from `app/src/main/assets` as the bundle's
+   `assets/` folder. `.github/workflows/ios.yml` (macos-15) runs `:shared:iosSimulatorArm64Test`,
+   `xcodegen generate`, `xcodebuild` for the simulator (no x86_64: `EXCLUDED_ARCHS`), launches it,
+   and uploads screenshots + log + a zipped simulator `.app`. Installing on a real iPhone needs the
+   Apple Developer Program (signing/TestFlight). Pushing workflow files needs the `workflow` token scope.
 
 ## Project status
 

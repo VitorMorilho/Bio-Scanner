@@ -82,3 +82,13 @@ jobs:
         with:
           name: ios-screenshots
           path: screenshots/
+
+      # Build de simulador (não instala em iPhone de verdade: isso exige assinatura da Apple).
+      # Num Mac: descompactar e arrastar o BioScanner.app para o simulador aberto.
+      - name: Empacotar o app de simulador
+        run: cd ios/build/Build/Products/Debug-iphonesimulator && zip -qry "$GITHUB_WORKSPACE/BioScanner-simulador.zip" BioScanner.app
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: ios-simulador-app
+          path: BioScanner-simulador.zip
