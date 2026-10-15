@@ -26,15 +26,14 @@ import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.put
 import kotlinx.serialization.json.buildJsonObject
-import java.io.IOException
-import javax.inject.Inject
+import kotlinx.io.IOException
 
 private const val DELETE_ACCOUNT_FUNCTION = "delete-account"
 
-class SupabaseAuthRepository @Inject constructor(
+class SupabaseAuthRepository(
     private val supabase: SupabaseClient,
     private val config: SupabaseConfig,
-    private val googleCredentials: GoogleCredentialCleaner,
+    private val platformCredentials: PlatformCredentialsCleaner,
 ) : AuthRepository {
 
     private val auth get() = supabase.auth
@@ -106,14 +105,14 @@ class SupabaseAuthRepository @Inject constructor(
             // não pode depender de rede. O refresh token expira sozinho no servidor.
             auth.clearSession()
         }
-        googleCredentials.clear()
+        platformCredentials.clear()
     }
 
     override suspend fun deleteAccount() = call {
         supabase.functions.invoke(DELETE_ACCOUNT_FUNCTION)
         // A conta não existe mais; chamar logout no servidor só daria erro.
         auth.clearSession()
-        googleCredentials.clear()
+        platformCredentials.clear()
     }
 
     private suspend fun <T> call(block: suspend () -> T): T {
@@ -155,7 +154,8 @@ internal fun Exception.toAuthError(): AuthError = when (this) {
         AuthErrorCode.OverRequestRateLimit, AuthErrorCode.OverEmailSendRateLimit -> AuthError.RATE_LIMITED
         else -> AuthError.UNKNOWN
     }
-    // HttpRequestException do supabase-kt e HttpRequestTimeoutException do Ktor são IOException.
+    // HttpRequestException do supabase-kt e HttpRequestTimeoutException do Ktor são IOException
+    // (kotlinx.io.IOException é a java.io.IOException na JVM).
     is IOException -> AuthError.NETWORK
     else -> AuthError.UNKNOWN
 }

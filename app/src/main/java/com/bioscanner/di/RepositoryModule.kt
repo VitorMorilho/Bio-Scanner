@@ -6,10 +6,12 @@ import com.bioscanner.data.platform.ResourceReader
 import com.bioscanner.data.repository.AssetRegionRepository
 import com.bioscanner.data.repository.ObservationRepositoryImpl
 import com.bioscanner.data.repository.SpeciesRepositoryImpl
+import com.bioscanner.domain.auth.AuthRepository
 import com.bioscanner.domain.observation.PhotoStorage
 import com.bioscanner.domain.repository.ObservationRepository
 import com.bioscanner.domain.repository.RegionRepository
 import com.bioscanner.domain.repository.SpeciesRepository
+import com.bioscanner.domain.usecase.DeleteAccountUseCase
 import com.bioscanner.domain.usecase.DeleteObservationUseCase
 import com.bioscanner.domain.usecase.GetSpeciesByIdUseCase
 import com.bioscanner.domain.usecase.RegisterObservationUseCase
@@ -47,6 +49,10 @@ object RepositoryModule {
     @Provides
     fun provideRegisterObservation(photoStorage: PhotoStorage, repository: ObservationRepository) =
         RegisterObservationUseCase(photoStorage, repository)
+
+    @Provides
+    fun provideDeleteAccount(auth: AuthRepository, repository: ObservationRepository, photoStorage: PhotoStorage) =
+        DeleteAccountUseCase(auth, repository, photoStorage)
 
     @Provides
     fun provideDeleteObservation(repository: ObservationRepository, photoStorage: PhotoStorage) =

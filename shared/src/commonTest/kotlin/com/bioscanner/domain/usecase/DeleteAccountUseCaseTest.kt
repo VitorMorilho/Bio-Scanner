@@ -11,10 +11,10 @@ import com.bioscanner.domain.observation.PhotoStorage
 import com.bioscanner.domain.repository.ObservationRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertThrows
-import org.junit.Test
+import kotlinx.coroutines.test.runTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class DeleteAccountUseCaseTest {
 
@@ -59,17 +59,17 @@ class DeleteAccountUseCaseTest {
     private val useCase = DeleteAccountUseCase(authRepository, observationRepository, photoStorage)
 
     @Test
-    fun `deletes the server account then local records then photos`() = runBlocking {
+    fun `deletes the server account then local records then photos`() = runTest {
         useCase()
 
         assertEquals(listOf("server", "db", "files"), events)
     }
 
     @Test
-    fun `server failure keeps local data`() {
+    fun `server failure keeps local data`() = runTest {
         serverFailure = AuthException(AuthError.NETWORK)
 
-        val thrown = assertThrows(AuthException::class.java) { runBlocking { useCase() } }
+        val thrown = assertFailsWith<AuthException> { useCase() }
 
         assertEquals(AuthError.NETWORK, thrown.error)
         assertEquals(emptyList<String>(), events)

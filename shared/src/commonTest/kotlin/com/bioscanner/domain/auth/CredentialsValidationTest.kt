@@ -1,8 +1,8 @@
 package com.bioscanner.domain.auth
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class CredentialsValidationTest {
 
@@ -14,10 +14,10 @@ class CredentialsValidationTest {
     }
 
     @Test
-    fun `email needs user, at sign and domain`() {
+    fun `email needs user at sign and domain`() {
         assertNull(validateEmail(" ana@exemplo.com.br "))
         listOf("", "ana", "ana@", "ana@exemplo", "a na@exemplo.com").forEach {
-            assertEquals(it, CredentialsIssue.EMAIL_INVALID, validateEmail(it))
+            assertEquals(CredentialsIssue.EMAIL_INVALID, validateEmail(it), it)
         }
     }
 
@@ -34,7 +34,7 @@ class CredentialsValidationTest {
         assertNull(validateCode("123456"))
         assertNull(validateCode(" 1234567890 "))
         listOf("12345", "12345678901", "12a456", "").forEach {
-            assertEquals(it, CredentialsIssue.CODE_INVALID, validateCode(it))
+            assertEquals(CredentialsIssue.CODE_INVALID, validateCode(it), it)
         }
     }
 }

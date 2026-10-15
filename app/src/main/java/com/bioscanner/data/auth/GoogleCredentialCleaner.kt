@@ -16,8 +16,8 @@ private const val TAG = "GoogleCredentialCleaner"
  */
 class GoogleCredentialCleaner @Inject constructor(
     @ApplicationContext private val context: Context,
-) {
-    suspend fun clear() {
+) : PlatformCredentialsCleaner {
+    override suspend fun clear() {
         try {
             CredentialManager.create(context).clearCredentialState(ClearCredentialStateRequest())
         } catch (e: CancellationException) {

@@ -3,8 +3,8 @@ package com.bioscanner.data.auth
 import io.github.jan.supabase.auth.user.UserInfo
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.time.ExperimentalTime
 
 // O construtor do UserInfo tem campos kotlin.time.Instant (ainda experimental).

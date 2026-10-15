@@ -33,6 +33,16 @@ kotlin {
             implementation(libs.androidx.sqlite.bundled)
             api(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
+            // Contas (login opcional). api: o app Android monta o cliente e injeta os tipos.
+            api(libs.supabase.auth)
+            api(libs.supabase.functions)
+        }
+        // Motor HTTP do Ktor usado pelo supabase-kt em cada plataforma.
+        androidMain.dependencies {
+            implementation(libs.ktor.client.okhttp)
+        }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
