@@ -7,11 +7,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.hilt.navigation.compose.hiltViewModel
+import org.koin.androidx.compose.koinViewModel
 
 /** Avisa quando há um APK mais novo publicado. "Baixar" abre o link no navegador. */
 @Composable
-fun UpdatePrompt(viewModel: UpdateViewModel = hiltViewModel()) {
+fun UpdatePrompt(viewModel: UpdateViewModel = koinViewModel()) {
     val update by viewModel.update.collectAsState()
     val uriHandler = LocalUriHandler.current
     val available = update ?: return

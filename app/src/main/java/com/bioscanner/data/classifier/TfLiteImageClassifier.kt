@@ -4,8 +4,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import com.bioscanner.domain.classifier.ImageClassifier
 import com.bioscanner.domain.model.ClassificationCandidate
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 
 private const val MODEL_ASSET_PATH = "model/model.tflite"
 private const val LABELS_ASSET_PATH = "model/labels.txt"
@@ -19,7 +17,7 @@ private const val MODEL_INPUT_SIZE = 224
 /**
  * Implementação real do [ImageClassifier], usando TensorFlow Lite.
  *
- * NÃO está funcional nem vinculada no Hilt (ver [com.bioscanner.di.ClassifierModule])
+ * NÃO está funcional nem vinculada no Koin (ver [com.bioscanner.di.classifierModule])
  * nesta primeira versão, pois ainda não existe um modelo .tflite treinado
  * nem `labels.txt` embarcados no app. Este arquivo documenta o design para
  * quando o modelo real chegar:
@@ -39,18 +37,18 @@ private const val MODEL_INPUT_SIZE = 224
  *   decrescente (top-K, ex.: top-3).
  *
  * Ponto de troca: uma vez implementado, trocar o binding em
- * [com.bioscanner.di.ClassifierModule] de MockImageClassifier para esta
+ * [com.bioscanner.di.classifierModule] de MockImageClassifier para esta
  * classe — nenhum outro código de domain/presentation precisa mudar.
  */
-class TfLiteImageClassifier @Inject constructor(
-    @ApplicationContext private val context: Context,
+class TfLiteImageClassifier(
+    private val context: Context,
 ) : ImageClassifier {
 
     override suspend fun classify(bitmap: Bitmap): List<ClassificationCandidate> {
         throw NotImplementedError(
             "TfLiteImageClassifier ainda não está implementado: nenhum modelo .tflite " +
                 "foi embarcado ainda. Use MockImageClassifier (binding padrão em " +
-                "ClassifierModule) até o modelo real e o dataset estarem disponíveis."
+                "classifierModule) até o modelo real e o dataset estarem disponíveis."
         )
     }
 }

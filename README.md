@@ -49,7 +49,7 @@ flowchart TD
     class Seed once
 ```
 
-A interface `ImageClassifier` hoje resolve, via Hilt (`ClassifierModule.kt`), para
+A interface `ImageClassifier` hoje resolve, via Koin (`classifierModule` em `di/AppModules.kt`), para
 `MockImageClassifier` — dados determinísticos derivados de propriedades baratas do `Bitmap`,
 escolhendo entre as espécies realmente seedadas no Room. Trocar para o modelo real depois de
 treinado é mudar **um parâmetro** nesse módulo, sem tocar em mais nada. Toda a UI lê os dados
@@ -61,7 +61,7 @@ através do `SpeciesRepository`, que expõe a tabela Room como `Flow`; essa tabe
 | Área | Tecnologias |
 |---|---|
 | Linguagem & UI | Kotlin 2.0.21, Jetpack Compose, Navigation Compose |
-| Arquitetura & DI | MVVM + Clean Architecture, Hilt 2.59.2, Coroutines + Flow |
+| Arquitetura & DI | MVVM + Clean Architecture, Koin 4.2.2, Coroutines + Flow |
 | Dados locais | Room, kotlinx.serialization, seed JSON (`assets/seed`) |
 | Câmera & mídia | CameraX, MediaStore (`Pictures/BioScanner`), Photo Picker |
 | ML (preparado, não plugado) | `tensorflow-lite` (core) — `tensorflow-lite-support` propositalmente excluído (bug de packaging com AGP 9) |
@@ -72,13 +72,13 @@ através do `SpeciesRepository`, que expõe a tabela Room como `Flow`; essa tabe
 **Feito (MVP com dados mock)**
 - Fluxo completo Home → Capture → Result → Detail navegável
 - ~6 espécies de cobra seedadas de `species_seed.json`
-- `MockImageClassifier` determinístico plugado via Hilt
+- `MockImageClassifier` determinístico plugado via Koin
 - Room (`SpeciesEntity`) com seed único no `onCreate`
 - Disclaimer de segurança visível em todas as telas relevantes
 
 **Pendente**
 - Dataset real de imagens (aguardando o usuário indicar o caminho)
 - Modelo `.tflite` treinado + `labels.txt`
-- Trocar o `@Binds` de `MockImageClassifier` → `TfLiteImageClassifier`
+- Trocar no `classifierModule` o `MockImageClassifier` → `TfLiteImageClassifier`
 - Fotos de referência em `assets/images/reference/`
 - Identidade de autor git configurada e primeiro commit

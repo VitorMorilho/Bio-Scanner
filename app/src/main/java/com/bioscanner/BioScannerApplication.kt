@@ -1,7 +1,16 @@
 package com.bioscanner
 
 import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
+import com.bioscanner.di.appModules
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
-@HiltAndroidApp
-class BioScannerApplication : Application()
+class BioScannerApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        startKoin {
+            androidContext(this@BioScannerApplication)
+            modules(appModules)
+        }
+    }
+}

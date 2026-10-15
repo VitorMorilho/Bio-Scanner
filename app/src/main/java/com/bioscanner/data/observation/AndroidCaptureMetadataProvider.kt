@@ -14,7 +14,6 @@ import com.bioscanner.domain.model.CaptureMetadata
 import com.bioscanner.domain.model.GeoPoint
 import com.bioscanner.domain.model.MetadataOrigin
 import com.bioscanner.domain.observation.CaptureMetadataProvider
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -22,7 +21,6 @@ import kotlinx.coroutines.withTimeoutOrNull
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Locale
-import javax.inject.Inject
 import kotlin.coroutines.resume
 
 // Última posição conhecida mais nova que isso é usada direto, sem ligar o GPS.
@@ -36,8 +34,8 @@ private const val LOCATION_TIMEOUT_MS = 15_000L
  * Services: evita uma dependência nova e funciona em aparelhos sem Play Services.
  * Sem permissão de localização, o registro é salvo sem posição.
  */
-class AndroidCaptureMetadataProvider @Inject constructor(
-    @ApplicationContext private val context: Context,
+class AndroidCaptureMetadataProvider(
+    private val context: Context,
 ) : CaptureMetadataProvider {
 
     override suspend fun forCameraPhoto(): CaptureMetadata {
