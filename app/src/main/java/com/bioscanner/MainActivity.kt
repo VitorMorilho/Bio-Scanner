@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.bioscanner.presentation.navigation.BioScannerNavGraph
+import com.bioscanner.presentation.update.UpdatePrompt
 import com.bioscanner.ui.theme.BioScannerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -16,6 +17,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             BioScannerTheme {
                 BioScannerNavGraph()
+                UpdatePrompt()
             }
         }
     }

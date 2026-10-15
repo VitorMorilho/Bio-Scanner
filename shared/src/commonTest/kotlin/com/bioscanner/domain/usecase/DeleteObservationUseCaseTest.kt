@@ -32,6 +32,7 @@ class DeleteObservationUseCaseTest {
             stored.remove(id)
             events += "db:$id"
         }
+        override suspend fun deleteAll() = Unit
     }
 
     private val photoStorage = object : PhotoStorage {
@@ -39,6 +40,7 @@ class DeleteObservationUseCaseTest {
         override suspend fun delete(photoPath: String) {
             events += "file:$photoPath"
         }
+        override suspend fun deleteAll() = Unit
     }
 
     private val useCase = DeleteObservationUseCase(repository, photoStorage)

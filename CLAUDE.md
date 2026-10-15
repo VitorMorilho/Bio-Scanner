@@ -35,8 +35,8 @@ records; there is **no species identification/analysis in the flow anymore** (th
 both instant identification and "send for analysis"). The classifier stack (`ImageClassifier`,
 `MockImageClassifier`, `ClassifyAndLookupSpeciesUseCase`, `ConfidenceBadge`) is kept but
 currently unused by any screen, pending the real model. Bottom nav: Registrar · Glossário
-(species search + map by state) · Meus registros (mocked user area listing the observations —
-no login yet). No real
+(species search + map by state) · Meus registros (user card with optional login + the list of
+observations). No real
 dataset or trained `.tflite` model exists yet. Species content is real: ~380 Brazilian snake
 species from GBIF, one open-license photo each (iNaturalist), and hand-curated text for the
 species filled in `tools/data/especies.csv` (see "Species data pipeline").
@@ -135,6 +135,40 @@ works as JDK: `export JAVA_HOME=/snap/android-studio/current/jbr`.
     check rejects. Only the core `org.tensorflow:tensorflow-lite` interpreter is used; image
     preprocessing for the real classifier will need to be done manually via `ByteBuffer` instead
     of the support library's helper classes.
+- Accounts (in progress on `feature/login`): optional login via Supabase Auth (email + password
+  and Google). Server side lives in `supabase/` (see its README): `profiles` table (RLS, created by
+  a trigger on `auth.users`, `ON DELETE CASCADE`) and the `delete-account` Edge Function, which
+  hard-deletes the caller's account with the service_role (never shipped in the app). Observations
+  stay local; deleting the account must also wipe `observation` + `filesDir/observations/`. Any
+  future server table with user data must reference `auth.users(id) ON DELETE CASCADE`.
+  App side: `domain/auth/` (`AuthRepository`, errors as `AuthException(AuthError)`, input
+  validation), `data/auth/SupabaseAuthRepository` (supabase-kt **3.6.0**, pinned: 3.7+ is built with
+  Kotlin 2.4, which AGP 9.1's built-in Kotlin can't read), `di/AuthModule`, and
+  `DeleteAccountUseCase` (server first, then local data). Sign-up confirmation and password reset
+  use emailed numeric codes typed in the app (no deep links) — **currently off**: without a custom
+  SMTP the free tier can't send them, so `enable_confirmations = false` in `supabase/config.toml`
+  (templates commented out) and `auth.emailCodes=false` in `local.properties` hides "Esqueci minha
+  senha". Turn all three back on together once SMTP exists. Passwords need 8+ chars with letters
+  and digits (`password_requirements`, mirrored in `validatePassword`). Credentials come from
+  `local.properties` (`supabase.url`, `supabase.anonKey`) → `BuildConfig`; without them account
+  actions fail with `AuthError.NOT_CONFIGURED` and the rest of the app works.
+  UI: `presentation/auth/` — one `Routes.AUTH` screen whose `AuthViewModel` walks `AuthStep`s
+  (sign in → sign up → confirm code / forgot → reset) and emits `done` once `currentUser` is
+  non-null; the user card in `RecordsScreen` shows sign in, or sign out / delete account (with
+  confirmation). Google uses Credential Manager (`GetSignInWithGoogleOption` + `GoogleNonce`:
+  SHA-256 to Google, raw to Supabase); the button only shows when `google.webClientId` is set in
+  `local.properties`. `googleid` is pinned to **1.1.1** (1.2.x is built with Kotlin 2.4, same issue
+  as supabase-kt). Instrumented tests replace `AuthModule` with `TestAuthModule` (always signed out).
+- Test APK distribution: APKs go to GitHub **Releases** (prerelease, tag `v<versionName>-teste`,
+  e.g. `v1.1-teste`), never committed. Release builds check that repo's releases on startup
+  (`data/update/GitHubUpdateChecker`, list endpoint because `/releases/latest` skips prereleases)
+  and `presentation/update/UpdatePrompt` offers the newer APK, opened in the browser; debug builds
+  don't check (`UPDATE_REPOSITORY` is empty). To publish: bump `versionCode` **and** `versionName`,
+  `assembleRelease`, `zipalign` + `apksigner` with `~/.android/debug.keystore` (no release key yet —
+  always sign on this machine, or installed copies can't update in place), then
+  `gh release create v<versionName>-teste BioScanner.apk --latest` (**not** prerelease, and the
+  asset always named `BioScanner.apk`: the README's download button points to
+  `releases/latest/download/BioScanner.apk`, which skips prereleases).
 - Async: Kotlin Coroutines + Flow (`SpeciesRepository` exposes data via `Flow`).
 - Navigation: Navigation Compose, routes in `presentation/navigation/Routes.kt`.
 - Glossary "Por região" tab (`presentation/glossary/region/`): Canvas-drawn map of the 27

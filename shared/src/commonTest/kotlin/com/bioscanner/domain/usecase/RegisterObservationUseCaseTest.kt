@@ -31,6 +31,7 @@ class RegisterObservationUseCaseTest {
         }
         override suspend fun findById(id: Long): Observation? = null
         override suspend fun delete(id: Long) = Unit
+        override suspend fun deleteAll() = Unit
     }
 
     @Test
@@ -40,6 +41,7 @@ class RegisterObservationUseCaseTest {
             photoStorage = object : PhotoStorage {
                 override suspend fun import(photoUri: String) = "/files/observations/copy.jpg"
                 override suspend fun delete(photoPath: String) = Unit
+                override suspend fun deleteAll() = Unit
             },
             repository = repository,
         )

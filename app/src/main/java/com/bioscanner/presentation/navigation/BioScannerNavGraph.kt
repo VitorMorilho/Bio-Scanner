@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.bioscanner.presentation.auth.AuthScreen
 import com.bioscanner.presentation.capture.CaptureScreen
 import com.bioscanner.presentation.common.BottomNavTab
 import com.bioscanner.presentation.detail.SpeciesDetailScreen
@@ -48,6 +49,16 @@ fun BioScannerNavGraph(
             RecordsScreen(
                 onTabClick = onTabClick,
                 onRecordClick = { id -> navController.navigate(Routes.observation(id)) },
+                onSignInClick = { navController.navigate(Routes.AUTH) },
+            )
+        }
+        composable(Routes.AUTH) {
+            // Fecha ao concluir o login ou ao voltar da primeira etapa. A checagem evita fechar
+            // duas vezes (login concluído + "voltar" no mesmo instante) e tirar "Meus registros" da pilha.
+            AuthScreen(
+                onClose = {
+                    if (navController.currentDestination?.route == Routes.AUTH) navController.popBackStack()
+                },
             )
         }
         composable(Routes.CAPTURE) {

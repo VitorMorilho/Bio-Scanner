@@ -10,4 +10,5 @@ interface ObservationRepository {
     suspend fun create(photoPath: String, metadata: CaptureMetadata): Long
     suspend fun findById(id: Long): Observation?
     suspend fun delete(id: Long)
+    suspend fun deleteAll()
 }

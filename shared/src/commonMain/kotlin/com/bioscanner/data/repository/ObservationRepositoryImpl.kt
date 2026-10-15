@@ -43,6 +43,8 @@ class ObservationRepositoryImpl(
     override suspend fun findById(id: Long): Observation? = dao.findById(id)?.toDomain()
 
     override suspend fun delete(id: Long) = dao.deleteById(id)
+
+    override suspend fun deleteAll() = dao.deleteAll()
 }
 
 fun ObservationEntity.toDomain(): Observation {
