@@ -18,14 +18,9 @@ import com.bioscanner.domain.observation.CaptureMetadataProvider
 import com.bioscanner.domain.observation.PhotoStorage
 import com.bioscanner.domain.update.UpdateChecker
 import com.bioscanner.domain.usecase.ClassifyAndLookupSpeciesUseCase
-import com.bioscanner.presentation.auth.AuthViewModel
-import com.bioscanner.presentation.capture.CaptureViewModel
-import com.bioscanner.presentation.detail.SpeciesDetailViewModel
-import com.bioscanner.presentation.glossary.region.RegionViewModel
-import com.bioscanner.presentation.glossary.species.SpeciesSearchViewModel
-import com.bioscanner.presentation.records.ObservationDetailViewModel
-import com.bioscanner.presentation.records.RecordsViewModel
-import com.bioscanner.presentation.register.RegisterViewModel
+import com.bioscanner.presentation.common.AndroidImageLoader
+import com.bioscanner.presentation.common.ImageLoader
+import com.bioscanner.presentation.platform.AppConfig
 import com.bioscanner.presentation.update.UpdateViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.factoryOf
@@ -41,7 +36,13 @@ val androidPlatformModule = module {
     single<CaptureMetadataProvider> { AndroidCaptureMetadataProvider(androidContext()) }
     single { SupabaseConfig(url = BuildConfig.SUPABASE_URL, anonKey = BuildConfig.SUPABASE_ANON_KEY) }
     single<PlatformCredentialsCleaner> { GoogleCredentialCleaner(androidContext()) }
-    single<UpdateChecker> { GitHubUpdateChecker(BuildConfig.UPDATE_REPOSITORY) }
+    single<ImageLoader> { AndroidImageLoader(androidContext()) }
+    single {
+        AppConfig(
+            googleWebClientId = BuildConfig.GOOGLE_WEB_CLIENT_ID,
+            emailCodesEnabled = BuildConfig.EMAIL_CODES_ENABLED,
+        )
+    }
 }
 
 /**
@@ -53,16 +54,10 @@ val classifierModule = module {
     factoryOf(::ClassifyAndLookupSpeciesUseCase)
 }
 
-val viewModelModule = module {
-    viewModelOf(::AuthViewModel)
-    viewModelOf(::CaptureViewModel)
-    viewModelOf(::SpeciesDetailViewModel)
-    viewModelOf(::RegionViewModel)
-    viewModelOf(::SpeciesSearchViewModel)
-    viewModelOf(::ObservationDetailViewModel)
-    viewModelOf(::RecordsViewModel)
-    viewModelOf(::RegisterViewModel)
+/** Aviso de atualização: só no Android (no iOS as atualizações vêm pela App Store/TestFlight). */
+val updateModule = module {
+    single<UpdateChecker> { GitHubUpdateChecker(BuildConfig.UPDATE_REPOSITORY) }
     viewModelOf(::UpdateViewModel)
 }
 
-val appModules = listOf(sharedModule, androidPlatformModule, classifierModule, viewModelModule)
+val appModules = listOf(sharedModule, presentationModule, androidPlatformModule, classifierModule, updateModule)

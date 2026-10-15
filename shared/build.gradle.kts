@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.ksp)
     alias(libs.plugins.androidx.room)
 }
@@ -37,10 +39,33 @@ kotlin {
             // Contas (login opcional). api: o app Android monta o cliente e injeta os tipos.
             api(libs.supabase.auth)
             api(libs.supabase.functions)
+
+            // Telas (Compose Multiplatform).
+            api(libs.cmp.runtime)
+            api(libs.cmp.foundation)
+            api(libs.cmp.ui)
+            implementation(libs.cmp.ui.backhandler)
+            api(libs.cmp.material3)
+            implementation(libs.cmp.material.icons.extended)
+            implementation(libs.cmp.components.resources)
+            api(libs.jb.lifecycle.viewmodel.compose)
+            implementation(libs.jb.lifecycle.runtime.compose)
+            implementation(libs.jb.navigation.compose)
+            implementation(libs.koin.compose.viewmodel)
         }
         // Motor HTTP do Ktor usado pelo supabase-kt em cada plataforma.
         androidMain.dependencies {
             implementation(libs.ktor.client.okhttp)
+            // Peças Android das telas: câmera, permissões/galeria e login com Google.
+            implementation(libs.androidx.core.ktx)
+            implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.camera.core)
+            implementation(libs.androidx.camera.camera2)
+            implementation(libs.androidx.camera.lifecycle)
+            implementation(libs.androidx.camera.view)
+            implementation(libs.androidx.credentials)
+            implementation(libs.androidx.credentials.play.services.auth)
+            implementation(libs.googleid)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -54,6 +79,11 @@ kotlin {
 
 room {
     schemaDirectory("$projectDir/schemas")
+}
+
+compose.resources {
+    // O padrão deriva do nome do projeto ("Bio Scanner", com espaço), que o D8 recusa em nome de classe.
+    packageOfResClass = "com.bioscanner.resources"
 }
 
 dependencies {

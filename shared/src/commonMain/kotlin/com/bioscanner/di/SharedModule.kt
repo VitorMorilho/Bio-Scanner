@@ -18,9 +18,18 @@ import com.bioscanner.domain.usecase.DeleteAccountUseCase
 import com.bioscanner.domain.usecase.DeleteObservationUseCase
 import com.bioscanner.domain.usecase.GetSpeciesByIdUseCase
 import com.bioscanner.domain.usecase.RegisterObservationUseCase
+import com.bioscanner.presentation.auth.AuthViewModel
+import com.bioscanner.presentation.capture.CaptureViewModel
+import com.bioscanner.presentation.detail.SpeciesDetailViewModel
+import com.bioscanner.presentation.glossary.region.RegionViewModel
+import com.bioscanner.presentation.glossary.species.SpeciesSearchViewModel
+import com.bioscanner.presentation.records.ObservationDetailViewModel
+import com.bioscanner.presentation.records.RecordsViewModel
+import com.bioscanner.presentation.register.RegisterViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -28,7 +37,8 @@ import kotlin.time.ExperimentalTime
 /**
  * Dependências comuns a Android e iOS. Cada plataforma soma um módulo que fornece:
  * `RoomDatabase.Builder<BioScannerDatabase>`, `ResourceReader`, `SeedVersionStore`,
- * `PhotoStorage`, `CaptureMetadataProvider`, `SupabaseConfig` e `PlatformCredentialsCleaner`.
+ * `PhotoStorage`, `CaptureMetadataProvider`, `SupabaseConfig`, `PlatformCredentialsCleaner`,
+ * `ImageLoader` e `AppConfig`.
  */
 @OptIn(ExperimentalTime::class)
 val sharedModule = module {
@@ -60,4 +70,16 @@ val sharedModule = module {
     factoryOf(::RegisterObservationUseCase)
     factoryOf(::DeleteObservationUseCase)
     factoryOf(::DeleteAccountUseCase)
+}
+
+/** ViewModels das telas comuns (o SavedStateHandle traz os argumentos da navegação). */
+val presentationModule = module {
+    viewModelOf(::AuthViewModel)
+    viewModelOf(::CaptureViewModel)
+    viewModelOf(::SpeciesDetailViewModel)
+    viewModelOf(::RegionViewModel)
+    viewModelOf(::SpeciesSearchViewModel)
+    viewModelOf(::ObservationDetailViewModel)
+    viewModelOf(::RecordsViewModel)
+    viewModelOf(::RegisterViewModel)
 }

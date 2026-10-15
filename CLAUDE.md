@@ -23,9 +23,11 @@ modeling now so this isn't a rewrite later:
 iOS is being added via **Kotlin Multiplatform**, in phases (the user has no Mac — iOS code can
 only be compiled, not run, on this Linux machine):
 1. **Done:** `shared/` KMP module with domain, data, Room and seed loading; the Android app uses it.
-2. In progress. **Done:** login (Supabase) moved to `shared`; DI is Koin (Hilt removed).
-   Next: screens in Compose Multiplatform (multiplatform navigation/ViewModel), platform pieces
-   (camera, photo picker, location, EXIF, files) behind interfaces, Sign in with Apple.
+2. In progress. **Done:** login (Supabase) moved to `shared`; DI is Koin (Hilt removed); all
+   screens, ViewModels and theme are Compose Multiplatform in `shared/commonMain`.
+   Next: iOS implementations of the platform pieces (marked `TODO(iOS)`: camera/gallery screen,
+   location permission, Google sign-in; plus `PhotoStorage`/`CaptureMetadataProvider` and an iOS
+   Koin platform module), Sign in with Apple.
 3. Then: Xcode project in `ios/` + GitHub Actions macOS runner to build it (repo is public).
 
 ## Project status
@@ -74,8 +76,21 @@ works as JDK: `export JAVA_HOME=/snap/android-studio/current/jbr`.
 - Kotlin is **2.3.21** (declared over AGP 9's bundled 2.2.10): kotlinx libraries 1.11 are published
   with Kotlin 2.3 and the 2.2 Kotlin/Native compiler can't read their klibs.
   `kotlin.native.enableKlibsCrossCompilation=true` (gradle.properties) lets iOS klibs compile on Linux.
-- UI is Jetpack Compose only (no XML layouts).
-- Theming lives in `app/src/main/java/com/bioscanner/ui/theme/` (`Color.kt`, `Theme.kt`, `Type.kt`)
+- UI is **Compose Multiplatform** (no XML layouts): screens, ViewModels (multiplatform
+  `androidx.lifecycle`, `SavedStateHandle` included) and navigation (`org.jetbrains.androidx.navigation`)
+  live in `shared/commonMain/.../presentation/`; `app` only has `MainActivity` (theme + nav graph +
+  `UpdatePrompt`) and Android data implementations. Versions are pinned as a set matching the app's
+  Compose 1.9 (see `libs.versions.toml`). Platform-specific UI is `expect`/`actual` (files named
+  `*.android.kt` / `*.ios.kt` to avoid JVM class clashes): `CaptureScreen` (CameraX + photo picker
+  on Android), `rememberLocationPermissionState`, `rememberGoogleSignIn`, `formatDateTime`,
+  `logWarning`/`logError`. Images go through the `ImageLoader` port (`AndroidImageLoader`:
+  BitmapFactory + EXIF rotation; `IosImageLoader`: Skia). Platform config reaches screens as
+  `AppConfig` (Koin). Android-only APIs (`android.*`, `R`, `BuildConfig`) can't be used in commonMain.
+- Resources: fonts and the intro image are in `shared/src/commonMain/composeResources/`
+  (`Res` class in package `com.bioscanner.resources`: the default package would come from the
+  project name "Bio Scanner", whose space D8 rejects). Species data/photos stay in `app/src/main/assets/`
+  (read via `ResourceReader`/`ImageLoader`; the iOS bundle will copy them).
+- Theming lives in `shared/.../ui/theme/` (`Color.kt`, `Theme.kt`, `Type.kt`)
   — `BioScannerTheme` wraps all Compose content and should be reused for any new screens.
 - Dependency versions are centralized in the Gradle version catalog at
   `gradle/libs.versions.toml`; add new dependencies there rather than hardcoding versions in
@@ -187,7 +202,7 @@ works as JDK: `export JAVA_HOME=/snap/android-studio/current/jbr`.
   Brazilian states (tap or UF chips) listing snakes recorded in each state, with photo; tapping
   opens the species Detail screen. State outlines come from `assets/regions/br_states.json`
   (not Room); the species list is a Room join. Photos are decoded from assets by
-  `presentation/common/SpeciesImage` (LruCache, no image library).
+  `presentation/common/SpeciesImage` (small LRU `ImageCache`, no image library).
 - Species data pipeline: `tools/data/especies.csv` (`;`-separated, Portuguese headers) is the
   hand-edited source of truth for curated fields. `python3 tools/data/build_species_data.py`
   (`--refresh` to re-query GBIF/IBGE, otherwise uses `tools/data/.cache/`) appends rows for new
