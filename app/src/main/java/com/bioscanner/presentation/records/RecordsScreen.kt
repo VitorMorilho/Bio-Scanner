@@ -38,20 +38,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.bioscanner.presentation.common.BioScannerBottomNav
 import com.bioscanner.presentation.common.BottomNavTab
 import com.bioscanner.presentation.common.ObservationPhoto
 import com.bioscanner.presentation.common.formatDateTime
 import com.bioscanner.ui.theme.ForestGreen
 import com.bioscanner.ui.theme.TextSecondary
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RecordsScreen(
     onTabClick: (BottomNavTab) -> Unit,
     onRecordClick: (observationId: Long) -> Unit,
     onSignInClick: () -> Unit,
-    viewModel: RecordsViewModel = hiltViewModel(),
+    viewModel: RecordsViewModel = koinViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
     var confirmingDelete by rememberSaveable { mutableStateOf(false) }

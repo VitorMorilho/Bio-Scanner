@@ -10,14 +10,12 @@ import com.bioscanner.domain.repository.RegionRepository
 import com.bioscanner.domain.usecase.RegisterObservationUseCase
 import com.bioscanner.domain.model.regionNameAt
 import com.bioscanner.presentation.navigation.Routes
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 private const val TAG = "RegisterViewModel"
 
@@ -30,8 +28,7 @@ data class RegisterUiState(
     val error: String? = null,
 )
 
-@HiltViewModel
-class RegisterViewModel @Inject constructor(
+class RegisterViewModel(
     private val metadataProvider: CaptureMetadataProvider,
     private val regionRepository: RegionRepository,
     private val registerObservation: RegisterObservationUseCase,

@@ -4,9 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CancellationException
-import javax.inject.Inject
 
 private const val TAG = "GoogleCredentialCleaner"
 
@@ -14,8 +12,8 @@ private const val TAG = "GoogleCredentialCleaner"
  * Esquece a conta Google escolhida no aparelho, para que o próximo login volte a mostrar o
  * seletor de contas em vez de entrar direto na mesma conta.
  */
-class GoogleCredentialCleaner @Inject constructor(
-    @ApplicationContext private val context: Context,
+class GoogleCredentialCleaner(
+    private val context: Context,
 ) : PlatformCredentialsCleaner {
     override suspend fun clear() {
         try {

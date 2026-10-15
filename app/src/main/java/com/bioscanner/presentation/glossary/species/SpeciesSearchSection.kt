@@ -23,15 +23,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.bioscanner.presentation.common.SpeciesCard
 import com.bioscanner.ui.theme.TextSecondary
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SpeciesSearchSection(
     onSpeciesClick: (speciesId: String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: SpeciesSearchViewModel = hiltViewModel(),
+    viewModel: SpeciesSearchViewModel = koinViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
 

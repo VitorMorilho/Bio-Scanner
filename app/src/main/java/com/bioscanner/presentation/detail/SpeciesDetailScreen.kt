@@ -17,11 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.bioscanner.domain.model.Species
 import com.bioscanner.presentation.common.DisclaimerBanner
 import com.bioscanner.presentation.common.SpeciesImage
 import com.bioscanner.presentation.common.VenomousBadge
+import org.koin.androidx.compose.koinViewModel
 
 // Usado quando a espécie é peçonhenta mas ainda não tem texto curado:
 // numa ficha de serpente peçonhenta, o bloco de primeiros socorros nunca some.
@@ -39,7 +39,7 @@ private val DENTITION_EXPLANATION = mapOf(
 )
 
 @Composable
-fun SpeciesDetailScreen(viewModel: SpeciesDetailViewModel = hiltViewModel()) {
+fun SpeciesDetailScreen(viewModel: SpeciesDetailViewModel = koinViewModel()) {
     val species by viewModel.species.collectAsState()
     val regionNames by viewModel.regionNames.collectAsState()
 

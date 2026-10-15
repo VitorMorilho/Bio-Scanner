@@ -13,7 +13,6 @@ import com.bioscanner.domain.repository.ObservationRepository
 import com.bioscanner.domain.repository.RegionRepository
 import com.bioscanner.domain.usecase.DeleteAccountUseCase
 import com.bioscanner.presentation.auth.message
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -24,7 +23,6 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 private const val TAG = "RecordsViewModel"
 
@@ -51,8 +49,7 @@ data class RecordsUiState(
 
 private data class AccountAction(val busy: Boolean = false, val message: String? = null)
 
-@HiltViewModel
-class RecordsViewModel @Inject constructor(
+class RecordsViewModel(
     observationRepository: ObservationRepository,
     regionRepository: RegionRepository,
     private val authRepository: AuthRepository,

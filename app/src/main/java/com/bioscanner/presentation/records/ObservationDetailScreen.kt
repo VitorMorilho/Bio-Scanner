@@ -31,15 +31,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.bioscanner.presentation.common.CaptureInfoCard
 import com.bioscanner.presentation.common.ObservationPhoto
 import com.bioscanner.ui.theme.ForestGreen
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ObservationDetailScreen(
     onDeleted: () -> Unit,
-    viewModel: ObservationDetailViewModel = hiltViewModel(),
+    viewModel: ObservationDetailViewModel = koinViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
     var confirmingDelete by rememberSaveable { mutableStateOf(false) }

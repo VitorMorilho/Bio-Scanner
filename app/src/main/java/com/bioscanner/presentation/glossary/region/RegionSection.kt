@@ -29,12 +29,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.bioscanner.presentation.common.DisclaimerBanner
 import com.bioscanner.presentation.common.SpeciesCard
 import com.bioscanner.presentation.glossary.CategoryChip
 import com.bioscanner.ui.theme.ForestGreen
 import com.bioscanner.ui.theme.TextSecondary
+import org.koin.androidx.compose.koinViewModel
 
 // Posição da fileira de siglas no LazyColumn (depois do aviso e do mapa).
 private const val UF_CHIPS_ITEM_INDEX = 2
@@ -43,7 +43,7 @@ private const val UF_CHIPS_ITEM_INDEX = 2
 fun RegionSection(
     onSpeciesClick: (speciesId: String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: RegionViewModel = hiltViewModel(),
+    viewModel: RegionViewModel = koinViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
     RegionContent(

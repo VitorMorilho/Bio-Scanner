@@ -32,6 +32,7 @@ kotlin {
             api(libs.androidx.room.runtime)
             implementation(libs.androidx.sqlite.bundled)
             api(libs.kotlinx.coroutines.core)
+            api(libs.koin.core)
             implementation(libs.kotlinx.serialization.json)
             // Contas (login opcional). api: o app Android monta o cliente e injeta os tipos.
             api(libs.supabase.auth)

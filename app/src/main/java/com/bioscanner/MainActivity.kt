@@ -7,9 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import com.bioscanner.presentation.navigation.BioScannerNavGraph
 import com.bioscanner.presentation.update.UpdatePrompt
 import com.bioscanner.ui.theme.BioScannerTheme
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

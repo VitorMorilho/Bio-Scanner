@@ -23,8 +23,9 @@ modeling now so this isn't a rewrite later:
 iOS is being added via **Kotlin Multiplatform**, in phases (the user has no Mac — iOS code can
 only be compiled, not run, on this Linux machine):
 1. **Done:** `shared/` KMP module with domain, data, Room and seed loading; the Android app uses it.
-2. Next: screens in Compose Multiplatform (Hilt → Koin, multiplatform navigation/ViewModel),
-   platform pieces (camera, photo picker, location, EXIF, files) behind interfaces.
+2. In progress. **Done:** login (Supabase) moved to `shared`; DI is Koin (Hilt removed).
+   Next: screens in Compose Multiplatform (multiplatform navigation/ViewModel), platform pieces
+   (camera, photo picker, location, EXIF, files) behind interfaces, Sign in with Apple.
 3. Then: Xcode project in `ios/` + GitHub Actions macOS runner to build it (repo is public).
 
 ## Project status
@@ -62,14 +63,14 @@ works as JDK: `export JAVA_HOME=/snap/android-studio/current/jbr`.
 
 ## Architecture
 
-- Modules: `app` (Android app, applicationId/namespace `com.bioscanner`: UI, Hilt, and Android
+- Modules: `app` (Android app, applicationId/namespace `com.bioscanner`: UI, ViewModels, and Android
   implementations of platform ports) and `shared` (Kotlin Multiplatform library — android + iosArm64
   + iosSimulatorArm64 — with `domain/`, `data/` (Room KMP, seed/regions parsing, repositories) and
-  `data/platform/` ports `ResourceReader`/`SeedVersionStore` with androidMain/iosMain impls).
+  `data/platform/` ports `ResourceReader`/`SeedVersionStore` with androidMain/iosMain impls,
+  `data/auth/` (Supabase) and `di/sharedModule`).
   Packages kept the same names when moved, so `com.bioscanner.domain.*`/`data.*` live in `shared`.
   Code in `shared/commonMain` must be pure Kotlin: no `java.*`, no `android.*`, no `javax.inject`
-  (Hilt wires shared classes via `@Provides` in `app/di/`), no `System.currentTimeMillis` (inject a
-  clock). Tests there use `kotlin.test`; backticked test names can't contain `,` or `()` on iOS.
+  (classes are wired in Koin modules), no `System.currentTimeMillis` (use `kotlin.time.Clock`). Tests there use `kotlin.test`; backticked test names can't contain `,` or `()` on iOS.
 - Kotlin is **2.3.21** (declared over AGP 9's bundled 2.2.10): kotlinx libraries 1.11 are published
   with Kotlin 2.3 and the 2.2 Kotlin/Native compiler can't read their klibs.
   `kotlin.native.enableKlibsCrossCompilation=true` (gradle.properties) lets iOS klibs compile on Linux.
@@ -82,18 +83,27 @@ works as JDK: `export JAVA_HOME=/snap/android-studio/current/jbr`.
 - Build config: compileSdk 36, minSdk 24, targetSdk 36 (app: AGP 9's built-in Kotlin, not
   `org.jetbrains.kotlin.android`; shared: `com.android.kotlin.multiplatform.library`), AGP 9.1.1, Java 11
   source/target compatibility, KSP `2.3.12` (decoupled version, not Kotlin-prefixed — AGP 9's
-  built-in Kotlin rejects the old `<kotlin>-<ksp>` versioning), Hilt `2.59.2` (first Hilt
-  version with real AGP 9 support; anything older fails with "Android BaseExtension not found"
-  or a `ComponentTreeDeps` runtime-class error).
+  built-in Kotlin rejects the old `<kotlin>-<ksp>` versioning; only `shared` uses it, for Room),
+  Koin `4.2.2` (needs Kotlin 2.3.20+).
 - MVVM + Clean Architecture under `com.bioscanner`: `domain/` (model, repository interface,
-  `ImageClassifier` interface, use cases — no Android/Room/Hilt imports except
+  `ImageClassifier` interface, use cases — no Android/Room/DI imports except
   `android.graphics.Bitmap` in the classifier interface, kept for simplicity per the scope note
   below), `data/` (Room, seed loading, repository impl, classifiers), `presentation/`
   (navigation + one package per screen: `home`, `capture`, `result`, `detail`, plus `common` for
-  shared composables like `DisclaimerBanner`), `di/` (Hilt modules).
-- Dependency injection: Hilt. `ClassifierModule` and `RepositoryModule` use `@Binds` on interfaces;
-  `DatabaseModule` provides the Room database + DAO; `DispatchersModule` provides an
-  `@ApplicationScope` `CoroutineScope` for DB seeding.
+  shared composables like `DisclaimerBanner`), `di/` (Koin modules).
+- Dependency injection: **Koin** (multiplatform; Hilt was Android-only). `shared/di/SharedModule.kt`
+  (`sharedModule`) has everything common: app `CoroutineScope` for DB seeding, Room database + DAOs,
+  repositories, use cases, Supabase client and `AuthRepository`. It expects each platform to provide
+  `RoomDatabase.Builder<BioScannerDatabase>`, `ResourceReader`, `SeedVersionStore`, `PhotoStorage`,
+  `CaptureMetadataProvider`, `SupabaseConfig` and `PlatformCredentialsCleaner`; on Android that's
+  `androidPlatformModule` in `app/di/AppModules.kt`, next to `classifierModule` and `viewModelModule`
+  (`viewModelOf`; screens use `koinViewModel()`, which also passes nav args via `SavedStateHandle`).
+  `BioScannerApplication` calls `startKoin`. Classes have plain constructors (no `@Inject`).
+  Instrumented tests: `CustomTestRunner` swaps in `TestBioScannerApplication` (app modules +
+  `testOverridesModule`: in-memory DB, signed-out `AuthRepository`, fixed classifier) and tests call
+  `resetKoin()` in `@Before` so every test gets fresh singletons, as Hilt did. Koin only fails at
+  runtime on a missing definition, so after DI changes run `connectedDebugAndroidTest` and open
+  every screen.
 - Camera: CameraX (`presentation/capture/CameraPreviewView.kt`) writes captures straight to
   `MediaStore` (`Pictures/BioScanner`) via `ImageCapture.OutputFileOptions` — no `FileProvider`
   needed, since `MediaStore` already returns an app-usable `content://` URI and needs no extra
@@ -115,17 +125,17 @@ works as JDK: `export JAVA_HOME=/snap/android-studio/current/jbr`.
   `shared/schemas/`); destructive fallback is only allowed from v1. `observation.speciesId` is
   deliberately not a FK, since reseeding deletes and reinserts species.
 - Observations (`domain/observation/` ports, `data/observation/` impls, bound in
-  `ObservationModule`): `CaptureMetadataProvider` (camera photo → now + device location; gallery
+  `androidPlatformModule`): `CaptureMetadataProvider` (camera photo → now + device location; gallery
   photo → EXIF date/location, falling back to device; platform `LocationManager`, no Play
   Services; location permission is optional), `PhotoStorage` (copies the photo into
   `filesDir/observations/`, downscaled to 1600 px and EXIF-rotated — picker URIs expire). The Android photo picker usually strips EXIF location, so
   gallery photos often get the device location instead (the UI says which origin each field has).
-- ML / recognition: `domain/classifier/ImageClassifier` is the abstraction; `ClassifierModule`
+- ML / recognition: `domain/classifier/ImageClassifier` is the abstraction; `classifierModule`
   currently binds `data/classifier/MockImageClassifier` (deterministic, derived from cheap
   `Bitmap` properties, picks from whatever species are actually seeded in Room — not a
   hardcoded list). `data/classifier/TfLiteImageClassifier` is a documented-but-not-functional
   stub for the real model (not bound in DI). **Swap point:** once a real `.tflite` model +
-  `labels.txt` exist, change one `@Binds` parameter type in `ClassifierModule.kt` from
+  `labels.txt` exist, change one line in `classifierModule` (`app/di/AppModules.kt`) from
   `MockImageClassifier` to `TfLiteImageClassifier` — no other file changes. Confidence threshold
   lives in `domain/classifier/ClassificationConfig.MIN_CONFIDENCE_THRESHOLD` (currently `0.65f`,
   a placeholder pending real model metrics).
@@ -141,10 +151,12 @@ works as JDK: `export JAVA_HOME=/snap/android-studio/current/jbr`.
   hard-deletes the caller's account with the service_role (never shipped in the app). Observations
   stay local; deleting the account must also wipe `observation` + `filesDir/observations/`. Any
   future server table with user data must reference `auth.users(id) ON DELETE CASCADE`.
-  App side: `domain/auth/` (`AuthRepository`, errors as `AuthException(AuthError)`, input
-  validation), `data/auth/SupabaseAuthRepository` (supabase-kt **3.6.0**, pinned: 3.7+ is built with
-  Kotlin 2.4, which AGP 9.1's built-in Kotlin can't read), `di/AuthModule`, and
-  `DeleteAccountUseCase` (server first, then local data). Sign-up confirmation and password reset
+  Client side, in `shared/commonMain`: `domain/auth/` (`AuthRepository`, errors as
+  `AuthException(AuthError)`, input validation), `data/auth/SupabaseAuthRepository` +
+  `createBioScannerSupabaseClient` (supabase-kt **3.6.0**, pinned: 3.7+ is built with Kotlin 2.4;
+  Ktor engine OkHttp on Android, Darwin on iOS; session in SharedPreferences / NSUserDefaults),
+  `PlatformCredentialsCleaner` (Android: `app/data/auth/GoogleCredentialCleaner`; iOS: `None` for
+  now), and `DeleteAccountUseCase` (server first, then local data). Sign-up confirmation and password reset
   use emailed numeric codes typed in the app (no deep links) — **currently off**: without a custom
   SMTP the free tier can't send them, so `enable_confirmations = false` in `supabase/config.toml`
   (templates commented out) and `auth.emailCodes=false` in `local.properties` hides "Esqueci minha
@@ -158,7 +170,7 @@ works as JDK: `export JAVA_HOME=/snap/android-studio/current/jbr`.
   confirmation). Google uses Credential Manager (`GetSignInWithGoogleOption` + `GoogleNonce`:
   SHA-256 to Google, raw to Supabase); the button only shows when `google.webClientId` is set in
   `local.properties`. `googleid` is pinned to **1.1.1** (1.2.x is built with Kotlin 2.4, same issue
-  as supabase-kt). Instrumented tests replace `AuthModule` with `TestAuthModule` (always signed out).
+  as supabase-kt). Instrumented tests override `AuthRepository` (always signed out).
 - Test APK distribution: APKs go to GitHub **Releases** (prerelease, tag `v<versionName>-teste`,
   e.g. `v1.1-teste`), never committed. Release builds check that repo's releases on startup
   (`data/update/GitHubUpdateChecker`, list endpoint because `/releases/latest` skips prereleases)

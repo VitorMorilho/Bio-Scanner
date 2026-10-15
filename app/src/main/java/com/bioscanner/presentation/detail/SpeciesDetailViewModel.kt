@@ -7,15 +7,12 @@ import com.bioscanner.domain.model.Species
 import com.bioscanner.domain.repository.RegionRepository
 import com.bioscanner.domain.usecase.GetSpeciesByIdUseCase
 import com.bioscanner.presentation.navigation.Routes
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
-@HiltViewModel
-class SpeciesDetailViewModel @Inject constructor(
+class SpeciesDetailViewModel(
     getSpeciesById: GetSpeciesByIdUseCase,
     regionRepository: RegionRepository,
     savedStateHandle: SavedStateHandle,

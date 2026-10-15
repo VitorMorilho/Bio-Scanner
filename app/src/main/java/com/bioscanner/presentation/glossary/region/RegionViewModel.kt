@@ -7,7 +7,6 @@ import com.bioscanner.domain.model.Region
 import com.bioscanner.domain.model.RegionCatalog
 import com.bioscanner.domain.model.RegionalSpecies
 import com.bioscanner.domain.repository.RegionRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,7 +16,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 private const val KEY_SELECTED_REGION = "selectedRegionId"
 private const val KEY_VENOMOUS_ONLY = "venomousOnly"
@@ -35,8 +33,7 @@ data class RegionUiState(
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@HiltViewModel
-class RegionViewModel @Inject constructor(
+class RegionViewModel(
     repository: RegionRepository,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {

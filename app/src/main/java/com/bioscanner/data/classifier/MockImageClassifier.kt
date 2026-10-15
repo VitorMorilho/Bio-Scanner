@@ -5,7 +5,6 @@ import com.bioscanner.domain.classifier.ImageClassifier
 import com.bioscanner.domain.model.ClassificationCandidate
 import com.bioscanner.domain.repository.SpeciesRepository
 import kotlinx.coroutines.flow.first
-import javax.inject.Inject
 import kotlin.random.Random
 
 /**
@@ -16,10 +15,10 @@ import kotlin.random.Random
  * já estão semeadas no Room, para não duplicar dados em dois lugares.
  *
  * Ponto de troca: quando o modelo real existir, troque o binding em
- * [com.bioscanner.di.ClassifierModule] de MockImageClassifier para
+ * [com.bioscanner.di.classifierModule] de MockImageClassifier para
  * TfLiteImageClassifier — nenhum outro código muda.
  */
-class MockImageClassifier @Inject constructor(
+class MockImageClassifier(
     private val repository: SpeciesRepository,
 ) : ImageClassifier {
 

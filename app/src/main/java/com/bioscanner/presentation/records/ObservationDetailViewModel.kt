@@ -9,7 +9,6 @@ import com.bioscanner.domain.repository.RegionRepository
 import com.bioscanner.domain.usecase.DeleteObservationUseCase
 import com.bioscanner.domain.model.regionNameAt
 import com.bioscanner.presentation.navigation.Routes
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,7 +16,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 data class ObservationDetailUiState(
     val loading: Boolean = true,
@@ -25,8 +23,7 @@ data class ObservationDetailUiState(
     val regionName: String? = null,
 )
 
-@HiltViewModel
-class ObservationDetailViewModel @Inject constructor(
+class ObservationDetailViewModel(
     observationRepository: ObservationRepository,
     regionRepository: RegionRepository,
     private val deleteObservation: DeleteObservationUseCase,

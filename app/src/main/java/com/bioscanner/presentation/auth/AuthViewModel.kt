@@ -10,7 +10,6 @@ import com.bioscanner.domain.auth.validateCode
 import com.bioscanner.domain.auth.validateEmail
 import com.bioscanner.domain.auth.validateName
 import com.bioscanner.domain.auth.validatePassword
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +19,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 /** Etapas da tela de conta. Uma tela só, para não espalhar email/senha por várias rotas. */
 enum class AuthStep { SIGN_IN, SIGN_UP, CONFIRM_SIGN_UP, FORGOT_PASSWORD, RESET_PASSWORD }
@@ -42,8 +40,7 @@ data class AuthUiState(
     val loading: Boolean = false,
 )
 
-@HiltViewModel
-class AuthViewModel @Inject constructor(
+class AuthViewModel(
     private val authRepository: AuthRepository,
 ) : ViewModel() {
 

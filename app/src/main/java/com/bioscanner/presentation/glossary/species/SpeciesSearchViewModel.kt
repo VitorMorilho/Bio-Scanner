@@ -6,12 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.bioscanner.domain.model.Species
 import com.bioscanner.domain.repository.SpeciesRepository
 import com.bioscanner.domain.search.matches
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
 private const val KEY_QUERY = "query"
 
@@ -22,8 +20,7 @@ data class SpeciesSearchUiState(
     val total: Int = 0,
 )
 
-@HiltViewModel
-class SpeciesSearchViewModel @Inject constructor(
+class SpeciesSearchViewModel(
     repository: SpeciesRepository,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {

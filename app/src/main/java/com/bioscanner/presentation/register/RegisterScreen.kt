@@ -37,11 +37,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.bioscanner.presentation.common.CaptureInfoCard
 import com.bioscanner.presentation.common.DisclaimerBanner
 import com.bioscanner.presentation.common.ObservationPhoto
 import com.bioscanner.ui.theme.ForestGreen
+import org.koin.androidx.compose.koinViewModel
 
 private val LOCATION_PERMISSIONS = arrayOf(
     Manifest.permission.ACCESS_FINE_LOCATION,
@@ -52,7 +52,7 @@ private val LOCATION_PERMISSIONS = arrayOf(
 fun RegisterScreen(
     onSaved: () -> Unit,
     onRetake: () -> Unit,
-    viewModel: RegisterViewModel = hiltViewModel(),
+    viewModel: RegisterViewModel = koinViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
     val context = LocalContext.current
