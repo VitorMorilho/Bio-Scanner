@@ -6,13 +6,11 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
 import java.util.UUID
-import javax.inject.Inject
 
 private const val PHOTOS_DIR = "observations"
 private const val MAX_DIMENSION = 1600
@@ -26,8 +24,8 @@ private const val JPEG_QUALITY = 85
  * câmera vêm "deitadas" com uma tag de orientação que o BitmapFactory ignora.
  * Os metadados de local/hora são lidos ANTES, da original (CaptureMetadataProvider).
  */
-class InternalPhotoStorage @Inject constructor(
-    @ApplicationContext private val context: Context,
+class InternalPhotoStorage(
+    private val context: Context,
 ) : com.bioscanner.domain.observation.PhotoStorage {
 
     override suspend fun import(photoUri: String): String = withContext(Dispatchers.IO) {
@@ -65,6 +63,12 @@ class InternalPhotoStorage @Inject constructor(
             if (file.parentFile?.canonicalPath == File(context.filesDir, PHOTOS_DIR).canonicalPath) {
                 file.delete()
             }
+        }
+    }
+
+    override suspend fun deleteAll() {
+        withContext(Dispatchers.IO) {
+            File(context.filesDir, PHOTOS_DIR).deleteRecursively()
         }
     }
 

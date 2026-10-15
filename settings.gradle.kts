@@ -21,4 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "Bio Scanner"
 include(":app")
+include(":shared")
  

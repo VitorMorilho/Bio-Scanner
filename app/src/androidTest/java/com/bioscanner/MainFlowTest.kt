@@ -1,9 +1,10 @@
 package com.bioscanner
 
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.test.core.app.ApplicationProvider
 import com.bioscanner.data.local.db.ObservationDao
 import com.bioscanner.data.local.db.ObservationEntity
 import com.bioscanner.data.local.db.SpeciesDao
@@ -13,32 +14,25 @@ import com.bioscanner.presentation.home.HomeScreen
 import com.bioscanner.presentation.common.BottomNavTab
 import com.bioscanner.presentation.navigation.BioScannerNavGraph
 import com.bioscanner.presentation.navigation.Routes
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import javax.inject.Inject
+import org.koin.java.KoinJavaComponent.get
 
-@HiltAndroidTest
 class MainFlowTest {
 
-    @get:Rule(order = 0)
-    val hiltRule = HiltAndroidRule(this)
+    @get:Rule
+    val composeRule = createComposeRule()
 
-    @get:Rule(order = 1)
-    val composeRule = createAndroidComposeRule<HiltTestActivity>()
-
-    @Inject
-    lateinit var speciesDao: SpeciesDao
-
-    @Inject
-    lateinit var observationDao: ObservationDao
+    private lateinit var speciesDao: SpeciesDao
+    private lateinit var observationDao: ObservationDao
 
     @Before
     fun setUp() {
-        hiltRule.inject()
+        ApplicationProvider.getApplicationContext<TestBioScannerApplication>().resetKoin()
+        speciesDao = get(SpeciesDao::class.java)
+        observationDao = get(ObservationDao::class.java)
 
         runBlocking {
             speciesDao.insertAll(
@@ -121,7 +115,7 @@ class MainFlowTest {
         composeRule.waitUntil(timeoutMillis = 5_000) {
             composeRule.onAllNodesWithText("Mato Grosso").fetchSemanticsNodes().isNotEmpty()
         }
-        composeRule.onNodeWithText("Usuário de demonstração").assertExists()
+        composeRule.onNodeWithText("Entrar ou criar conta").assertExists()
     }
 
     @Test

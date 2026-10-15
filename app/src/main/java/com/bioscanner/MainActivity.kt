@@ -4,19 +4,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.bioscanner.presentation.navigation.BioScannerNavGraph
-import com.bioscanner.ui.theme.BioScannerTheme
-import dagger.hilt.android.AndroidEntryPoint
+import com.bioscanner.presentation.BioScannerApp
+import com.bioscanner.presentation.update.UpdatePrompt
 
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            BioScannerTheme {
-                BioScannerNavGraph()
-            }
+            BioScannerApp(overlay = { UpdatePrompt() })
         }
     }
 }
