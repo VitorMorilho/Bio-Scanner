@@ -18,17 +18,17 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 75
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 21
 
-      # O Gradle configura o módulo Android junto com o shared, então precisa do SDK.
-      - uses: android-actions/setup-android@v3
+      # O Gradle configura o módulo Android junto com o shared, então precisa do Android SDK:
+      # a imagem macOS do GitHub já traz um (ANDROID_HOME); o AGP baixa a plataforma que faltar.
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
 
       - name: Cache do Kotlin/Native
         uses: actions/cache@v4
@@ -77,7 +77,7 @@ jobs:
           # Falha se o app fechou (crash) durante a abertura.
           xcrun simctl spawn "$DEVICE" launchctl list | grep -q com.bioscanner.ios
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: ios-screenshots
