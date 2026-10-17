@@ -8,6 +8,8 @@ Versão de teste. No celular, abra o arquivo baixado e, se pedir, permita "insta
 desconhecidos". O app avisa sozinho quando sai uma versão nova. Histórico de versões em
 [Releases](https://github.com/VitorMorilho/Bio-Scanner/releases).
 
+Feito por Vitor Morilho · [veja outros projetos no meu portfólio](https://vitormorilho.github.io/#bioscanner).
+
 ---
 
 App Android (Kotlin + Jetpack Compose) que identifica espécies de animais/plantas a partir de
