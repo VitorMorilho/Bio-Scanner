@@ -2,6 +2,7 @@ package com.bioscanner.data.local.seed
 
 import com.bioscanner.data.local.db.SpeciesRegionEntity
 import com.bioscanner.data.repository.toDomain
+import com.bioscanner.domain.model.ColorPattern
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.Test
@@ -14,6 +15,7 @@ class SpeciesSeedParserTest {
            "popularName":"Cascavel","otherNames":["Maracá","Boicininga"],"family":"Viperidae",
            "venomous":true,"riskLevel":"HIGH","dentition":"solenóglifa","diet":"Roedores",
            "activityPeriod":"Noturno","defensiveBehavior":"Agita o chocalho",
+           "colorPatterns":["VARIEGATED","NOT_A_PATTERN"],
            "regions":[{"regionId":"MT","occurrences":46},{"regionId":"GO","occurrences":12}]},
           {"id":"pseudoboa_nigra","scientificName":"Pseudoboa nigra","family":"Colubridae",
            "venomous":false}
@@ -45,6 +47,8 @@ class SpeciesSeedParserTest {
         assertEquals("Roedores", cascavel.diet)
         assertEquals("Noturno", cascavel.activityPeriod)
         assertEquals("Agita o chocalho", cascavel.defensiveBehavior)
+        // Valor desconhecido (seed mais novo que o app) é ignorado.
+        assertEquals(setOf(ColorPattern.VARIEGATED), cascavel.colorPatterns)
     }
 
     @Test
@@ -57,5 +61,6 @@ class SpeciesSeedParserTest {
         assertEquals(emptyList<String>(), species.otherNames)
         assertNull(species.defensiveBehavior)
         assertNull(species.firstAidProcedure)
+        assertEquals(emptySet(), species.colorPatterns)
     }
 }

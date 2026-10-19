@@ -1,5 +1,6 @@
 package com.bioscanner.domain.search
 
+import com.bioscanner.domain.model.ColorPattern
 import com.bioscanner.domain.model.Species
 
 /**
@@ -13,6 +14,13 @@ fun Species.matches(query: String): Boolean {
     return (listOfNotNull(popularName, scientificName, family) + otherNames)
         .any { it.normalizedForSearch().contains(q) }
 }
+
+/**
+ * Filtro de padrão de cor: nenhum marcado = todas; vários marcados = basta ter
+ * um deles (marcar "Verde" e "Lineado" mostra as verdes e as lineadas).
+ */
+fun Species.hasAnyPattern(selected: Set<ColorPattern>): Boolean =
+    selected.isEmpty() || colorPatterns.any { it in selected }
 
 // Sem java.text.Normalizer no iOS: tabela dos acentos usados em português
 // (os nomes vêm do GBIF/CSV em pt-BR e latim, que não tem acento).

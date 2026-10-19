@@ -15,7 +15,7 @@ const val DATABASE_NAME = "bioscanner.db"
 
 @Database(
     entities = [SpeciesEntity::class, SpeciesRegionEntity::class, ObservationEntity::class],
-    version = 3,
+    version = 4,
     exportSchema = true,
 )
 @ConstructedBy(BioScannerDatabaseConstructor::class)
@@ -48,6 +48,16 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
 }
 
 /**
+ * v4 adiciona o padrão de cor das espécies. Só muda a tabela species (que o
+ * seed recarrega depois, pois a versão dele também mudou); observation fica intacta.
+ */
+val MIGRATION_3_4 = object : Migration(3, 4) {
+    override fun migrate(connection: SQLiteConnection) {
+        connection.execSQL("ALTER TABLE `species` ADD COLUMN `colorPatterns` TEXT NOT NULL DEFAULT ''")
+    }
+}
+
+/**
  * Configuração comum às duas plataformas; cada uma só cria o Builder com o
  * caminho do arquivo (ver androidMain/iosMain).
  *
@@ -60,7 +70,7 @@ fun RoomDatabase.Builder<BioScannerDatabase>.configure(
 ): BioScannerDatabase = this
     .setDriver(BundledSQLiteDriver())
     .setQueryCoroutineContext(Dispatchers.IO)
-    .addMigrations(MIGRATION_2_3)
+    .addMigrations(MIGRATION_2_3, MIGRATION_3_4)
     // Só a v1 pode ser recriada do zero: ela tinha apenas o seed dos
     // assets. Da v2 em diante há registros do usuário → só Migration.
     .fallbackToDestructiveMigrationFrom(dropAllTables = true, 1)

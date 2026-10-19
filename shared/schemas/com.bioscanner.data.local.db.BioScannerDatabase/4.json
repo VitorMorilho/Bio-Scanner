@@ -1,0 +1,262 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 4,
+    "identityHash": "2cd0e1a0a97efb06920de84f1a254814",
+    "entities": [
+      {
+        "tableName": "species",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `scientificName` TEXT NOT NULL, `popularName` TEXT, `family` TEXT NOT NULL, `category` TEXT NOT NULL, `venomous` INTEGER NOT NULL, `riskLevel` TEXT NOT NULL, `description` TEXT, `geographicDistribution` TEXT, `firstAidProcedure` TEXT, `referenceImagePath` TEXT, `classifierLabel` TEXT, `gbifKey` INTEGER, `otherNames` TEXT NOT NULL, `dentition` TEXT, `diet` TEXT, `activityPeriod` TEXT, `defensiveBehavior` TEXT, `imageCredit` TEXT, `colorPatterns` TEXT NOT NULL DEFAULT '', PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "scientificName",
+            "columnName": "scientificName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "popularName",
+            "columnName": "popularName",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "family",
+            "columnName": "family",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "venomous",
+            "columnName": "venomous",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "riskLevel",
+            "columnName": "riskLevel",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "geographicDistribution",
+            "columnName": "geographicDistribution",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "firstAidProcedure",
+            "columnName": "firstAidProcedure",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "referenceImagePath",
+            "columnName": "referenceImagePath",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "classifierLabel",
+            "columnName": "classifierLabel",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "gbifKey",
+            "columnName": "gbifKey",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "otherNames",
+            "columnName": "otherNames",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dentition",
+            "columnName": "dentition",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "diet",
+            "columnName": "diet",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "activityPeriod",
+            "columnName": "activityPeriod",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "defensiveBehavior",
+            "columnName": "defensiveBehavior",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "imageCredit",
+            "columnName": "imageCredit",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "colorPatterns",
+            "columnName": "colorPatterns",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "''"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "species_region",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`speciesId` TEXT NOT NULL, `regionId` TEXT NOT NULL, `occurrences` INTEGER NOT NULL, PRIMARY KEY(`speciesId`, `regionId`), FOREIGN KEY(`speciesId`) REFERENCES `species`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "speciesId",
+            "columnName": "speciesId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "regionId",
+            "columnName": "regionId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "occurrences",
+            "columnName": "occurrences",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "speciesId",
+            "regionId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_species_region_regionId",
+            "unique": false,
+            "columnNames": [
+              "regionId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_species_region_regionId` ON `${TABLE_NAME}` (`regionId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "species",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "speciesId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "observation",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `photoPath` TEXT NOT NULL, `takenAt` INTEGER NOT NULL, `takenAtOrigin` TEXT NOT NULL, `latitude` REAL, `longitude` REAL, `locationOrigin` TEXT, `status` TEXT NOT NULL, `speciesId` TEXT, `confidence` REAL, `createdAt` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "photoPath",
+            "columnName": "photoPath",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "takenAt",
+            "columnName": "takenAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "takenAtOrigin",
+            "columnName": "takenAtOrigin",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "latitude",
+            "columnName": "latitude",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "longitude",
+            "columnName": "longitude",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "locationOrigin",
+            "columnName": "locationOrigin",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "speciesId",
+            "columnName": "speciesId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "confidence",
+            "columnName": "confidence",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "createdAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2cd0e1a0a97efb06920de84f1a254814')"
+    ]
+  }
+}

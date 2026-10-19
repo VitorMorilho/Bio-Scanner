@@ -33,6 +33,7 @@ data class SpeciesSeedDto(
     val firstAidProcedure: String? = null,
     val referenceImagePath: String? = null,
     val imageCredit: String? = null,
+    val colorPatterns: List<String> = emptyList(),
     val classifierLabel: String? = null,
     val regions: List<SpeciesRegionSeedDto> = emptyList(),
 )

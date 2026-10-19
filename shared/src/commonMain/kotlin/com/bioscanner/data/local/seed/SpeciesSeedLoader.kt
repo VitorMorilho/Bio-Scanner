@@ -52,4 +52,5 @@ private fun SpeciesSeedDto.toEntity() = SpeciesEntity(
     activityPeriod = activityPeriod,
     defensiveBehavior = defensiveBehavior,
     imageCredit = imageCredit,
+    colorPatterns = colorPatterns.joinToString(SpeciesEntity.OTHER_NAMES_SEPARATOR),
 )

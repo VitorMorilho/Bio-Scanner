@@ -26,6 +26,9 @@ O CSV:
   apaga nem sobrescreve o que você escreveu.
 - Célula vazia = sem informação (o app esconde a seção), exceto "peconhenta"
   e "denticao", que caem no padrão da família.
+- "padrao_cor": um ou mais de verde, uniforme, lineado, vermelho, variegado,
+  separados por "|" (ex.: "vermelho|variegado"). É o filtro do Glossário;
+  espécie sem valor só aparece quando nenhum filtro está marcado.
 - Para usar uma foto sua: coloque o arquivo em tools/data/fotos/ e escreva o
   nome dele na coluna "foto" (e o crédito em "credito_foto").
 
@@ -108,6 +111,14 @@ DENTITION_BY_FAMILY = {
     # Colubridae fica sem padrão: tem áglifas e opistóglifas.
 }
 DENTITIONS = {"áglifa", "opistóglifa", "proteróglifa", "solenóglifa"}
+# Valor no CSV → ColorPattern (shared/.../domain/model/ColorPattern.kt).
+COLOR_PATTERNS = {
+    "verde": "GREEN",
+    "uniforme": "UNIFORM",
+    "lineado": "LINED",
+    "vermelho": "RED_CORAL",
+    "variegado": "VARIEGATED",
+}
 RISK_LEVELS = {"alto": "HIGH", "médio": "MEDIUM", "medio": "MEDIUM", "baixo": "LOW"}
 
 # Espécies com menos registros que isso no estado são descartadas: costumam
@@ -117,7 +128,7 @@ MAX_OTHER_NAMES = 6
 
 # Ordem das colunas do CSV (o cabeçalho é em português por ser editado à mão).
 CSV_COLUMNS = [
-    "especie", "familia", "nome_popular", "peconhenta", "risco", "denticao",
+    "especie", "familia", "nome_popular", "peconhenta", "risco", "denticao", "padrao_cor",
     "alimentacao", "periodo_atividade", "comportamento_defesa", "descricao",
     "distribuicao", "primeiros_socorros", "foto", "credito_foto",
 ]
@@ -306,8 +317,15 @@ def parse_bool(value, default):
     return default
 
 
+def parse_color_patterns(value):
+    return [normalize(v.strip()) for v in value.split("|") if v.strip()]
+
+
 def validate(row, line):
     problems = []
+    for pattern in parse_color_patterns(row["padrao_cor"]):
+        if pattern not in COLOR_PATTERNS:
+            problems.append(f"padrao_cor '{pattern}' (use: {', '.join(COLOR_PATTERNS)}, separados por |)")
     if row["denticao"] and row["denticao"].lower() not in DENTITIONS:
         problems.append(f"denticao '{row['denticao']}' (use: {', '.join(sorted(DENTITIONS))})")
     if row["risco"] and row["risco"].lower() not in RISK_LEVELS:
@@ -477,6 +495,7 @@ def main():
             "diet": row["alimentacao"] or None,
             "activityPeriod": row["periodo_atividade"] or None,
             "defensiveBehavior": row["comportamento_defesa"] or None,
+            "colorPatterns": [COLOR_PATTERNS[p] for p in dict.fromkeys(parse_color_patterns(row["padrao_cor"]))],
             "description": row["descricao"] or None,
             "geographicDistribution": row["distribuicao"] or None,
             "firstAidProcedure": row["primeiros_socorros"] or None,
@@ -486,11 +505,14 @@ def main():
         })
 
     if args.no_photos:
+        # Reaproveita os créditos já gravados: sem isso o seed perderia o
+        # crédito das fotos existentes (obrigatório pela licença).
+        credits = json.loads(PHOTO_CREDITS_PATH.read_text(encoding="utf-8")) if PHOTO_CREDITS_PATH.exists() else {}
         for sp in species:
             sp.pop("_ownPhoto"), sp.pop("_ownCredit")
             exists = (IMAGES_DIR / f"{sp['id']}.webp").exists()
             sp["referenceImagePath"] = f"images/species/{sp['id']}.webp" if exists else None
-            sp["imageCredit"] = None
+            sp["imageCredit"] = credits.get(sp["id"], {}).get("credit") if exists else None
     else:
         print("Gerando fotos…")
         build_photos(species)
