@@ -25,6 +25,7 @@ data class Species(
     val activityPeriod: String? = null,
     val defensiveBehavior: String? = null,
     val imageCredit: String? = null,
+    val colorPatterns: Set<ColorPattern> = emptySet(),
 ) {
     /** Nome para títulos: o popular, ou o científico quando não há um confiável. */
     val displayName: String get() = popularName ?: scientificName

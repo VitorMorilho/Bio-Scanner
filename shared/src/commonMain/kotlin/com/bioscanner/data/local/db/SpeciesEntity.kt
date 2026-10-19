@@ -1,5 +1,6 @@
 package com.bioscanner.data.local.db
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -30,6 +31,13 @@ data class SpeciesEntity(
     val activityPeriod: String? = null,
     val defensiveBehavior: String? = null,
     val imageCredit: String? = null,
+    /**
+     * Nomes de [com.bioscanner.domain.model.ColorPattern] separados por
+     * [OTHER_NAMES_SEPARATOR]. O default no SQL tem que bater com o
+     * ADD COLUMN de MIGRATION_3_4.
+     */
+    @ColumnInfo(defaultValue = "")
+    val colorPatterns: String = "",
 ) {
     companion object {
         // Lista simples demais para uma tabela própria ou TypeConverter.

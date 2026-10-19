@@ -49,4 +49,32 @@ class MigrationTest {
         )
         db.close()
     }
+
+    @Test
+    fun migrate3To4AddsColorPatternsAndKeepsObservations() {
+        helper.createDatabase(3).apply {
+            execSQL(
+                "INSERT INTO species (id, scientificName, popularName, family, category, venomous, riskLevel, " +
+                    "description, geographicDistribution, firstAidProcedure, referenceImagePath, classifierLabel, " +
+                    "otherNames) VALUES ('sp1', 'Sci', 'Pop', 'Fam', 'snake', 1, 'HIGH', NULL, NULL, NULL, NULL, 'sp1', '')",
+            )
+            execSQL(
+                "INSERT INTO observation (photoPath, takenAt, takenAtOrigin, status, createdAt) " +
+                    "VALUES ('/x.jpg', 0, 'DEVICE', 'SAVED', 0)",
+            )
+            close()
+        }
+
+        // Valida o schema resultante contra shared/schemas/.../4.json.
+        val db = helper.runMigrationsAndValidate(4, listOf(MIGRATION_3_4))
+        db.prepare("SELECT colorPatterns FROM species WHERE id = 'sp1'").use { statement ->
+            statement.step()
+            assertEquals("", statement.getText(0))
+        }
+        db.prepare("SELECT COUNT(*) FROM observation").use { statement ->
+            statement.step()
+            assertEquals(1L, statement.getLong(0))
+        }
+        db.close()
+    }
 }
