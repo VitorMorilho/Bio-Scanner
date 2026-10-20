@@ -1,7 +1,8 @@
 // Exclui definitivamente a conta de quem chama (exigência da Play Store e direito do titular na LGPD).
 //
 // Fluxo: o app chama com o access token do usuário → validamos o token → apagamos o usuário em
-// auth.users com a service_role. O ON DELETE CASCADE remove profiles (e futuras tabelas do usuário).
+// auth.users com a service_role. O ON DELETE CASCADE remove profiles e observations; as fotos do
+// bucket "observations" não são apagadas em cascata, então saem antes, aqui.
 // Os dados locais (registros e fotos no aparelho) são apagados pelo próprio app depois do sucesso.
 //
 // A service_role só existe aqui no servidor (variável injetada pelo Supabase); nunca vai para o app.
@@ -31,6 +32,14 @@ Deno.serve(async (req) => {
   const { data, error: userError } = await admin.auth.getUser(token);
   if (userError || !data.user) return json({ error: "unauthorized" }, 401);
 
+  // Fotos primeiro: se falhar, a conta continua existindo e o app pode tentar de novo. Ao contrário
+  // (conta apagada, fotos não), ninguém mais conseguiria apagá-las pelo app.
+  const photosError = await deletePhotos(admin, data.user.id);
+  if (photosError) {
+    console.error("delete-account photos failed", data.user.id, photosError);
+    return json({ error: "delete_failed" }, 500);
+  }
+
   // Exclusão definitiva (sem soft delete): o email fica livre para um novo cadastro.
   const { error: deleteError } = await admin.auth.admin.deleteUser(data.user.id);
   if (deleteError) {
@@ -40,3 +49,23 @@ Deno.serve(async (req) => {
 
   return json({ deleted: true }, 200);
 });
+
+const PHOTOS_BUCKET = "observations";
+const PAGE_SIZE = 1000;
+
+/** Apaga tudo em observations/<userId>/. Retorna a mensagem de erro, ou null. */
+async function deletePhotos(
+  admin: ReturnType<typeof createClient>,
+  userId: string,
+): Promise<string | null> {
+  const bucket = admin.storage.from(PHOTOS_BUCKET);
+  // Sempre a primeira página: o que foi apagado sai da listagem.
+  while (true) {
+    const { data: files, error } = await bucket.list(userId, { limit: PAGE_SIZE });
+    if (error) return error.message;
+    if (!files || files.length === 0) return null;
+    const { error: removeError } = await bucket.remove(files.map((f) => `${userId}/${f.name}`));
+    if (removeError) return removeError.message;
+    if (files.length < PAGE_SIZE) return null;
+  }
+}

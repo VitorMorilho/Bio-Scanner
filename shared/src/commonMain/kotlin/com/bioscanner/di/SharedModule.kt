@@ -10,7 +10,12 @@ import com.bioscanner.data.local.seed.SpeciesSeedLoader
 import com.bioscanner.data.repository.AssetRegionRepository
 import com.bioscanner.data.repository.ObservationRepositoryImpl
 import com.bioscanner.data.repository.SpeciesRepositoryImpl
+import com.bioscanner.data.sync.ObservationRemote
+import com.bioscanner.data.sync.ObservationSync
+import com.bioscanner.data.sync.ObservationSyncCoordinator
+import com.bioscanner.data.sync.SupabaseObservationRemote
 import com.bioscanner.domain.auth.AuthRepository
+import com.bioscanner.domain.observation.ObservationSyncer
 import com.bioscanner.domain.repository.ObservationRepository
 import com.bioscanner.domain.repository.RegionRepository
 import com.bioscanner.domain.repository.SpeciesRepository
@@ -18,6 +23,7 @@ import com.bioscanner.domain.usecase.DeleteAccountUseCase
 import com.bioscanner.domain.usecase.DeleteObservationUseCase
 import com.bioscanner.domain.usecase.GetSpeciesByIdUseCase
 import com.bioscanner.domain.usecase.RegisterObservationUseCase
+import com.bioscanner.domain.usecase.SignOutUseCase
 import com.bioscanner.presentation.auth.AuthViewModel
 import com.bioscanner.presentation.capture.CaptureViewModel
 import com.bioscanner.presentation.detail.SpeciesDetailViewModel
@@ -28,6 +34,7 @@ import com.bioscanner.presentation.records.RecordsViewModel
 import com.bioscanner.presentation.register.RegisterViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.map
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -61,15 +68,27 @@ val sharedModule = module {
 
     single<SpeciesRepository> { SpeciesRepositoryImpl(get()) }
     single<RegionRepository> { AssetRegionRepository(get(), get()) }
-    single<ObservationRepository> { ObservationRepositoryImpl(get(), now = { Clock.System.now().toEpochMilliseconds() }) }
+    single<ObservationRepository> {
+        ObservationRepositoryImpl(
+            dao = get(),
+            currentUserId = get<AuthRepository>().currentUser.map { it?.id },
+            now = { Clock.System.now().toEpochMilliseconds() },
+        )
+    }
 
     single { createBioScannerSupabaseClient(get()) }
     single<AuthRepository> { SupabaseAuthRepository(get(), get(), get()) }
+
+    single<ObservationRemote> { SupabaseObservationRemote(get()) }
+    single { ObservationSync(get(), get(), get()) }
+    // Criado junto com o Koin: é ele que sincroniza ao abrir o app e ao entrar na conta.
+    single<ObservationSyncer>(createdAtStart = true) { ObservationSyncCoordinator(get(), get(), get()) }
 
     factoryOf(::GetSpeciesByIdUseCase)
     factoryOf(::RegisterObservationUseCase)
     factoryOf(::DeleteObservationUseCase)
     factoryOf(::DeleteAccountUseCase)
+    factoryOf(::SignOutUseCase)
 }
 
 /** ViewModels das telas comuns (o SavedStateHandle traz os argumentos da navegação). */

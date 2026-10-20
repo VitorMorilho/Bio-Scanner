@@ -62,8 +62,8 @@ fun RecordsScreen(
             title = { Text("Excluir conta?") },
             text = {
                 Text(
-                    "Sua conta será apagada permanentemente, junto com todos os registros e fotos " +
-                        "salvos neste aparelho. Essa ação não pode ser desfeita. É preciso estar conectado à internet.",
+                    "Sua conta será apagada permanentemente, junto com todos os seus registros e fotos, " +
+                        "na nuvem e neste aparelho. Essa ação não pode ser desfeita. É preciso estar conectado à internet.",
                 )
             },
             confirmButton = {
@@ -77,6 +77,29 @@ fun RecordsScreen(
             },
             dismissButton = {
                 TextButton(onClick = { confirmingDelete = false }) { Text("Cancelar") }
+            },
+        )
+    }
+
+    state.signOutBlockedBy?.let { pending ->
+        val records = if (pending == 1) "1 registro ainda não foi enviado" else "$pending registros ainda não foram enviados"
+        AlertDialog(
+            onDismissRequest = viewModel::cancelSignOut,
+            title = { Text("Sair mesmo assim?") },
+            text = {
+                Text(
+                    "$records para a nuvem (verifique a internet). Ao sair, os registros da conta saem deste " +
+                        "aparelho e os não enviados serão perdidos.",
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = viewModel::confirmSignOut,
+                    colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error),
+                ) { Text("Sair e perder") }
+            },
+            dismissButton = {
+                TextButton(onClick = viewModel::cancelSignOut) { Text("Continuar na conta") }
             },
         )
     }
@@ -149,7 +172,7 @@ private fun UserCard(
     val account = state.account
     val (name, subtitle) = when (account) {
         AccountState.Loading -> "…" to ""
-        AccountState.SignedOut -> "Sem conta" to "Seus registros ficam salvos neste aparelho."
+        AccountState.SignedOut -> "Sem conta" to "Seus registros ficam só neste aparelho. Entre para guardá-los na nuvem."
         is AccountState.SignedIn -> account.user.displayName to (account.user.email ?: "")
     }
     Surface(
@@ -179,6 +202,18 @@ private fun UserCard(
                 Stat(value = state.records.size, label = "registros")
                 Stat(value = state.distinctRegionsCount, label = "estados")
                 Stat(value = state.withLocationCount, label = "com local")
+            }
+
+            if (account is AccountState.SignedIn && state.pendingUploads > 0) {
+                Text(
+                    text = if (state.pendingUploads == 1) {
+                        "1 registro aguardando envio para a nuvem."
+                    } else {
+                        "${state.pendingUploads} registros aguardando envio para a nuvem."
+                    },
+                    style = MaterialTheme.typography.bodySmall,
+                    color = TextSecondary,
+                )
             }
 
             state.accountMessage?.let { message ->

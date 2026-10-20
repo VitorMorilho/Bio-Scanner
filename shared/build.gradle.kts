@@ -19,7 +19,8 @@ kotlin {
         namespace = "com.bioscanner.shared"
         compileSdk = 36
         minSdk = 24
-        withHostTestBuilder {}
+        // android.util.Log devolve valores padrão em vez de lançar exceção (logWarning no código comum).
+        withHostTestBuilder {}.configure { isReturnDefaultValues = true }
     }
     // Framework estático "Shared" consumido pelo app Xcode (ios/), gerado pela task
     // embedAndSignAppleFrameworkForXcode na fase de build do Xcode.
@@ -45,6 +46,8 @@ kotlin {
             // Contas (login opcional). api: o app Android monta o cliente e injeta os tipos.
             api(libs.supabase.auth)
             api(libs.supabase.functions)
+            implementation(libs.supabase.postgrest)
+            implementation(libs.supabase.storage)
 
             // Telas (Compose Multiplatform).
             api(libs.cmp.runtime)

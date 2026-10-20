@@ -3,6 +3,7 @@ package com.bioscanner.domain.usecase
 import com.bioscanner.domain.model.CaptureMetadata
 import com.bioscanner.domain.model.MetadataOrigin
 import com.bioscanner.domain.model.Observation
+import com.bioscanner.domain.observation.ObservationSyncer
 import com.bioscanner.domain.observation.PhotoStorage
 import com.bioscanner.domain.repository.ObservationRepository
 import kotlinx.coroutines.flow.Flow
@@ -26,6 +27,7 @@ class DeleteObservationUseCaseTest {
         )
         override fun observeAll(): Flow<List<Observation>> = emptyFlow()
         override fun observeById(id: Long): Flow<Observation?> = emptyFlow()
+        override fun observePendingUploadCount(): Flow<Int> = emptyFlow()
         override suspend fun create(photoPath: String, metadata: CaptureMetadata): Long = 0
         override suspend fun findById(id: Long): Observation? = stored[id]
         override suspend fun delete(id: Long) {
@@ -41,15 +43,25 @@ class DeleteObservationUseCaseTest {
             events += "file:$photoPath"
         }
         override suspend fun deleteAll() = Unit
+        override suspend fun readBytes(photoPath: String): ByteArray? = null
+        override suspend fun save(bytes: ByteArray) = ""
     }
 
-    private val useCase = DeleteObservationUseCase(repository, photoStorage)
+    private val syncer = object : ObservationSyncer {
+        override fun requestSync() {
+            events += "sync"
+        }
+        override suspend fun syncNow(userId: String) = Unit
+        override suspend fun clearLocal(userId: String) = Unit
+    }
+
+    private val useCase = DeleteObservationUseCase(repository, photoStorage, syncer)
 
     @Test
-    fun `deletes the row first and then its photo`() = runTest {
+    fun `deletes the row first and then its photo then asks for a sync`() = runTest {
         useCase(1)
 
-        assertEquals(listOf("db:1", "file:/files/observations/a.jpg"), events)
+        assertEquals(listOf("db:1", "file:/files/observations/a.jpg", "sync"), events)
         assertEquals(emptyMap<Long, Observation>(), repository.stored)
     }
 

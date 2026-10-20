@@ -1,11 +1,18 @@
 # Supabase — contas do BioScanner
 
-Login é opcional. A conta fica no Supabase Auth. Os registros (observações e fotos) continuam
-só no aparelho, no Room.
+Login é opcional. A conta fica no Supabase Auth. Sem conta, os registros ficam só no aparelho
+(Room). Com conta, eles também vão para a nuvem e voltam ao entrar de novo, em qualquer aparelho.
 
 - `migrations/20261013000000_profiles.sql`: tabela `profiles` com RLS, e um trigger que cria o
   perfil no cadastro.
-- `functions/delete-account/`: exclui a conta de quem chama. O perfil é apagado em cascata.
+- `migrations/20261020000000_observations.sql`: tabela `observations` (data e local de cada
+  registro) e o bucket privado `observations` (fotos em `<user_id>/<id>.jpg`), com RLS para cada
+  usuário só ver e apagar o que é seu.
+- `functions/delete-account/`: exclui a conta de quem chama. Apaga as fotos do bucket e depois o
+  usuário; perfil e registros saem em cascata.
+
+O plano grátis tem 1 GB de Storage. Com fotos de 1600 px (~300 KB), são cerca de 3 mil fotos
+somando todos os usuários.
 
 ## Aplicar
 
@@ -17,6 +24,10 @@ só no aparelho, no Room.
 **Pela CLI:**
 `supabase link --project-ref <ref>`, depois `supabase db push` e
 `supabase functions deploy delete-account`.
+
+A migration `observations` precisa estar aplicada **e** a função `delete-account` atualizada antes
+de publicar a versão do app que envia registros; senão o envio falha (o app tenta de novo depois)
+e a exclusão de conta deixa as fotos no bucket.
 
 ## Configurar o Auth
 

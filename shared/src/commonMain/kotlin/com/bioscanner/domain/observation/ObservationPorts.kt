@@ -21,4 +21,25 @@ interface PhotoStorage {
 
     /** Apaga todas as cópias salvas (exclusão de conta). */
     suspend fun deleteAll()
+
+    /** Conteúdo de uma foto salva, para enviar à nuvem; null se o arquivo não existir mais. */
+    suspend fun readBytes(photoPath: String): ByteArray?
+
+    /** Grava uma foto baixada da nuvem (já reduzida e rotacionada) e retorna o caminho. */
+    suspend fun save(bytes: ByteArray): String
+}
+
+/**
+ * Leva os registros da conta logada para a nuvem e traz os que estão lá. Sem conta, nada sai do
+ * aparelho.
+ */
+interface ObservationSyncer {
+    /** Pede uma sincronização em segundo plano, sem esperar. Sem conta, não faz nada. */
+    fun requestSync()
+
+    /** Sincroniza agora e espera. Lança exceção se falhar (ex.: sem internet). */
+    suspend fun syncNow(userId: String)
+
+    /** Tira do aparelho os registros e fotos de [userId] (eles continuam na nuvem). */
+    suspend fun clearLocal(userId: String)
 }

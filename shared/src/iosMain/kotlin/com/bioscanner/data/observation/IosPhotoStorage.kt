@@ -1,15 +1,23 @@
 package com.bioscanner.data.observation
 
 import com.bioscanner.domain.observation.PhotoStorage
+import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.usePinned
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
+import platform.Foundation.NSData
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSURL
 import platform.Foundation.NSUUID
 import platform.Foundation.NSUserDomainMask
+import platform.Foundation.create
+import platform.Foundation.dataWithContentsOfFile
+import platform.Foundation.writeToURL
+import platform.posix.memcpy
 
 private const val PHOTOS_DIR = "observations"
 
@@ -18,7 +26,7 @@ private const val PHOTOS_DIR = "observations"
  * filesDir/observations/.
  * TODO(iOS): reduzir para 1600 px e gravar já rotacionada (orientação EXIF), como no Android.
  */
-@OptIn(ExperimentalForeignApi::class)
+@OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
 class IosPhotoStorage : PhotoStorage {
 
     private val fileManager get() = NSFileManager.defaultManager
@@ -46,4 +54,29 @@ class IosPhotoStorage : PhotoStorage {
     override suspend fun deleteAll() {
         withContext(Dispatchers.IO) { fileManager.removeItemAtURL(photosDir(), null) }
     }
+
+    override suspend fun readBytes(photoPath: String): ByteArray? = withContext(Dispatchers.IO) {
+        NSData.dataWithContentsOfFile(photoPath)?.toByteArray()
+    }
+
+    override suspend fun save(bytes: ByteArray): String = withContext(Dispatchers.IO) {
+        // Vem da nuvem já pronta (foi gravada por import), então só grava o arquivo.
+        val target = requireNotNull(photosDir().URLByAppendingPathComponent("${NSUUID().UUIDString}.jpg"))
+        check(bytes.toNSData().writeToURL(target, atomically = true)) { "Falha ao gravar a foto" }
+        requireNotNull(target.path)
+    }
+}
+
+@OptIn(ExperimentalForeignApi::class)
+private fun NSData.toByteArray(): ByteArray {
+    val size = length.toInt()
+    val result = ByteArray(size)
+    if (size > 0) result.usePinned { memcpy(it.addressOf(0), bytes, length) }
+    return result
+}
+
+@OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
+private fun ByteArray.toNSData(): NSData {
+    if (isEmpty()) return NSData()
+    return usePinned { NSData.create(bytes = it.addressOf(0), length = size.toULong()) }
 }

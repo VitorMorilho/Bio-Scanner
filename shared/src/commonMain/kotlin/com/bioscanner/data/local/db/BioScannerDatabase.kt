@@ -15,7 +15,7 @@ const val DATABASE_NAME = "bioscanner.db"
 
 @Database(
     entities = [SpeciesEntity::class, SpeciesRegionEntity::class, ObservationEntity::class],
-    version = 4,
+    version = 5,
     exportSchema = true,
 )
 @ConstructedBy(BioScannerDatabaseConstructor::class)
@@ -58,6 +58,21 @@ val MIGRATION_3_4 = object : Migration(3, 4) {
 }
 
 /**
+ * v5 liga os registros à conta e à nuvem: id global, dono e estado de envio. Registros existentes
+ * ficam como "sem conta" (LOCAL) e ganham um id na primeira sincronização.
+ */
+val MIGRATION_4_5 = object : Migration(4, 5) {
+    override fun migrate(connection: SQLiteConnection) {
+        connection.execSQL("ALTER TABLE `observation` ADD COLUMN `remoteId` TEXT")
+        connection.execSQL("ALTER TABLE `observation` ADD COLUMN `userId` TEXT")
+        connection.execSQL("ALTER TABLE `observation` ADD COLUMN `syncState` TEXT NOT NULL DEFAULT 'LOCAL'")
+        connection.execSQL(
+            "CREATE UNIQUE INDEX IF NOT EXISTS `index_observation_remoteId` ON `observation` (`remoteId`)",
+        )
+    }
+}
+
+/**
  * Configuração comum às duas plataformas; cada uma só cria o Builder com o
  * caminho do arquivo (ver androidMain/iosMain).
  *
@@ -70,7 +85,7 @@ fun RoomDatabase.Builder<BioScannerDatabase>.configure(
 ): BioScannerDatabase = this
     .setDriver(BundledSQLiteDriver())
     .setQueryCoroutineContext(Dispatchers.IO)
-    .addMigrations(MIGRATION_2_3, MIGRATION_3_4)
+    .addMigrations(MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
     // Só a v1 pode ser recriada do zero: ela tinha apenas o seed dos
     // assets. Da v2 em diante há registros do usuário → só Migration.
     .fallbackToDestructiveMigrationFrom(dropAllTables = true, 1)
