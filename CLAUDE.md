@@ -142,7 +142,7 @@ works as JDK: `export JAVA_HOME=/snap/android-studio/current/jbr`.
   `species`/`species_region` are asset-derived: `SeedingCallback.onOpen` replaces them whenever
   the seed's `version` hash differs from the one in `SeedVersionStore` (SharedPreferences / NSUserDefaults) (it never touches
   `observation`). **`observation` is user data: every schema change needs a `Migration`** (see
-  `MIGRATION_2_3` and `androidTest/.../MigrationTest`, which validates against
+  `MIGRATION_2_3`…`MIGRATION_4_5` and `androidTest/.../MigrationTest`, which validates against
   `shared/schemas/`); destructive fallback is only allowed from v1. `observation.speciesId` is
   deliberately not a FK, since reseeding deletes and reinserts species.
 - Observations (`domain/observation/` ports, `data/observation/` impls, bound in
@@ -169,9 +169,10 @@ works as JDK: `export JAVA_HOME=/snap/android-studio/current/jbr`.
 - Accounts (in progress on `feature/login`): optional login via Supabase Auth (email + password
   and Google). Server side lives in `supabase/` (see its README): `profiles` table (RLS, created by
   a trigger on `auth.users`, `ON DELETE CASCADE`) and the `delete-account` Edge Function, which
-  hard-deletes the caller's account with the service_role (never shipped in the app). Observations
-  stay local; deleting the account must also wipe `observation` + `filesDir/observations/`. Any
-  future server table with user data must reference `auth.users(id) ON DELETE CASCADE`.
+  hard-deletes the caller's account with the service_role (never shipped in the app); it deletes the
+  user's photos in the `observations` bucket first (storage isn't cascaded). Deleting the account
+  must also wipe `observation` + `filesDir/observations/`. Any future server table with user data
+  must reference `auth.users(id) ON DELETE CASCADE`.
   Client side, in `shared/commonMain`: `domain/auth/` (`AuthRepository`, errors as
   `AuthException(AuthError)`, input validation), `data/auth/SupabaseAuthRepository` +
   `createBioScannerSupabaseClient` (supabase-kt **3.6.0**, pinned: 3.7+ is built with Kotlin 2.4;
@@ -192,6 +193,16 @@ works as JDK: `export JAVA_HOME=/snap/android-studio/current/jbr`.
   SHA-256 to Google, raw to Supabase); the button only shows when `google.webClientId` is set in
   `local.properties`. `googleid` is pinned to **1.1.1** (1.2.x is built with Kotlin 2.4, same issue
   as supabase-kt). Instrumented tests override `AuthRepository` (always signed out).
+- Cloud records (`data/sync/`): signed out, records are local only (`syncState = LOCAL`, `userId`
+  null). Signing in **adopts** them into the account; records made signed in start as
+  `PENDING_UPLOAD`. `ObservationSync` (mutex, cloud is the source of truth) pushes deletes, uploads
+  (photo to bucket `observations/<userId>/<remoteId>.jpg`, then the row in table `observations`,
+  idempotent by the app-generated uuid `remoteId`), then pulls what's missing and drops `SYNCED`
+  rows gone from the cloud. `ObservationSyncCoordinator` (Koin `createdAtStart`) runs it on app
+  open, on sign-in and on `requestSync()`; no background sync with the app closed. Deleting an
+  account record marks `PENDING_DELETE` (hidden). `SignOutUseCase` syncs first and returns
+  `HasPendingUploads` if something didn't upload (UI asks to confirm), then signs out and
+  `clearLocal`s that user's rows/photos. Server side: `supabase/migrations/20261020000000_observations.sql`.
 - Test APK distribution: APKs go to GitHub **Releases** (prerelease, tag `v<versionName>-teste`,
   e.g. `v1.1-teste`), never committed. Release builds check that repo's releases on startup
   (`data/update/GitHubUpdateChecker`, list endpoint because `/releases/latest` skips prereleases)

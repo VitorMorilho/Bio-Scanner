@@ -72,6 +72,18 @@ class InternalPhotoStorage(
         }
     }
 
+    override suspend fun readBytes(photoPath: String): ByteArray? = withContext(Dispatchers.IO) {
+        File(photoPath).takeIf { it.isFile }?.readBytes()
+    }
+
+    override suspend fun save(bytes: ByteArray): String = withContext(Dispatchers.IO) {
+        // Vem da nuvem já reduzida e rotacionada (foi gravada por import), então só copia.
+        val dir = File(context.filesDir, PHOTOS_DIR).apply { mkdirs() }
+        val file = File(dir, "${UUID.randomUUID()}.jpg")
+        file.writeBytes(bytes)
+        file.absolutePath
+    }
+
     private fun exifRotation(exif: ExifInterface): Int =
         when (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
             ExifInterface.ORIENTATION_ROTATE_90 -> 90

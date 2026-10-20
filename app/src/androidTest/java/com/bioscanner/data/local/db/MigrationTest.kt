@@ -6,6 +6,7 @@ import androidx.sqlite.execSQL
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -74,6 +75,28 @@ class MigrationTest {
         db.prepare("SELECT COUNT(*) FROM observation").use { statement ->
             statement.step()
             assertEquals(1L, statement.getLong(0))
+        }
+        db.close()
+    }
+
+    @Test
+    fun migrate4To5KeepsObservationsAsLocalRecords() {
+        helper.createDatabase(4).apply {
+            execSQL(
+                "INSERT INTO observation (photoPath, takenAt, takenAtOrigin, status, createdAt) " +
+                    "VALUES ('/x.jpg', 0, 'DEVICE', 'SAVED', 0)",
+            )
+            close()
+        }
+
+        // Valida o schema resultante (colunas novas e índice único) contra shared/schemas/.../5.json.
+        val db = helper.runMigrationsAndValidate(5, listOf(MIGRATION_4_5))
+        db.prepare("SELECT photoPath, remoteId, userId, syncState FROM observation").use { statement ->
+            assertTrue(statement.step())
+            assertEquals("/x.jpg", statement.getText(0))
+            assertTrue(statement.isNull(1))
+            assertTrue(statement.isNull(2))
+            assertEquals("LOCAL", statement.getText(3))
         }
         db.close()
     }

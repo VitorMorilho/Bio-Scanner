@@ -40,6 +40,7 @@ class DeleteAccountUseCaseTest {
     private val observationRepository = object : ObservationRepository {
         override fun observeAll(): Flow<List<Observation>> = emptyFlow()
         override fun observeById(id: Long): Flow<Observation?> = emptyFlow()
+        override fun observePendingUploadCount(): Flow<Int> = emptyFlow()
         override suspend fun create(photoPath: String, metadata: CaptureMetadata): Long = 0
         override suspend fun findById(id: Long): Observation? = null
         override suspend fun delete(id: Long) = Unit
@@ -54,6 +55,8 @@ class DeleteAccountUseCaseTest {
         override suspend fun deleteAll() {
             events += "files"
         }
+        override suspend fun readBytes(photoPath: String): ByteArray? = null
+        override suspend fun save(bytes: ByteArray) = ""
     }
 
     private val useCase = DeleteAccountUseCase(authRepository, observationRepository, photoStorage)
